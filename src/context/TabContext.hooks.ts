@@ -1,5 +1,5 @@
 import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
-import type { ReanimatedTopTabNavigation } from 'react-navigation-reanimated-top-tabs';
+import { type ReanimatedTopTabNavigation } from '../types';
 
 const useResetApproachingScreenScrollOffset = ({
   screenRefs,

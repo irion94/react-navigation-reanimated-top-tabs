@@ -2,6 +2,7 @@ import { useRoute } from '@react-navigation/native';
 import { Context } from '../context/TabContext';
 import { useContext } from 'react';
 import {
+  interpolate,
   useAnimatedProps,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -98,13 +99,27 @@ export const useScreenProperties = () => {
 };
 
 export const useHeader = () => {
-  const { headerHeight, transformationX } = useTabContext();
+  const { headerHeight, transformationX, transformationY } = useTabContext();
 
   const hideHeader = () => {
     transformationX.value = withTiming(-headerHeight.value);
   };
 
-  return { hideHeader };
+  const defaultStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: interpolate(
+          transformationY.value,
+          [0, -headerHeight.value],
+          [0, -headerHeight.value],
+          'clamp'
+        ),
+      },
+    ],
+    zIndex: -1,
+  }));
+
+  return { hideHeader, defaultStyle };
 };
 
 //TODO: make it private
