@@ -51,14 +51,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://test.git"
+    "url": "git@github.com:irion94/react-navigation-reanimated-top-tabs.git"
   },
-  "author": "irion94 <kozub@devanddeliver.com> (https://test)",
+  "author": "irion94 <kozub@devanddeliver.com> (https://github.com/irion94)",
   "license": "MIT",
   "bugs": {
-    "url": "https://test/issues"
+    "url": "https://github.com/irion94/react-navigation-reanimated-top-tabs/issues"
   },
-  "homepage": "https://test#readme",
+  "homepage": "https://github.com/irion94/react-navigation-reanimated-top-tabs",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
