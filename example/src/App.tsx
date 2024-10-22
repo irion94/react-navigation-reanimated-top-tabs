@@ -1,40 +1,61 @@
-import { View } from 'react-native';
 import {
   createReanimatedTopTabNavigator,
   ScrollView,
+  TabBarLabelBaseComponent,
 } from 'react-navigation-reanimated-top-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer, useRoute } from '@react-navigation/native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Reanimated from 'react-native-reanimated';
+import { Text } from 'react-native';
 
 const Stack = createReanimatedTopTabNavigator();
 
-const DumpScreen = () => (
-  <ScrollView>
-    <View style={{ flex: 1, backgroundColor: 'red' }} />
-  </ScrollView>
-);
+const DumpScreen = () => {
+  const { name } = useRoute();
+
+  return (
+    <ScrollView>
+      <Reanimated.View style={{ flex: 1, backgroundColor: name }}>
+        {new Array(25).fill(0).map((_, index) => (
+          <Reanimated.View
+            key={index}
+            style={{ height: 50, alignItems: 'center' }}
+          >
+            <Text>{index}</Text>
+          </Reanimated.View>
+        ))}
+      </Reanimated.View>
+    </ScrollView>
+  );
+};
 
 const Test = () => {
   return (
     <Stack.Navigator
-      config={['normal', 'normal', 'normal']}
-      HeaderComponent={() => <Reanimated.View style={{ height: 150 }} />}
+      config={['normal', 'normal', 'minimalized']}
+      screenOptions={{
+        tabBarLabel: TabBarLabelBaseComponent,
+      }}
+      HeaderComponent={() => (
+        <Reanimated.View style={{ height: 200, backgroundColor: 'purple' }} />
+      )}
     >
-      <Stack.Screen name={'a'} component={DumpScreen} />
-      <Stack.Screen name={'b'} component={DumpScreen} />
-      <Stack.Screen name={'c'} component={DumpScreen} />
+      <Stack.Screen name={'blue'} component={DumpScreen} />
+      <Stack.Screen name={'red'} component={DumpScreen} />
+      <Stack.Screen name={'green'} component={DumpScreen} />
     </Stack.Navigator>
   );
 };
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView>
       <SafeAreaProvider>
         <NavigationContainer>
-          <Test />
+          <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+            <Test />
+          </SafeAreaView>
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
