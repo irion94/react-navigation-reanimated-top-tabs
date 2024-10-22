@@ -1,7 +1,7 @@
 import { useRoute } from '@react-navigation/native';
 import { type LayoutChangeEvent, type ViewProps } from 'react-native';
 import Reanimated, { type AnimatedProps } from 'react-native-reanimated';
-import { useTabContext } from '../../hooks/TopTab.hooks';
+import { useTabContext } from '../../hooks/Tab.hooks';
 
 export interface ScreenWrapperProps
   extends AnimatedProps<Omit<ViewProps, 'onLayout'>> {}

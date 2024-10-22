@@ -1,6 +1,7 @@
 # react-navigation-reanimated-top-tabs
 
-react-navigation-reanimated-top-tabs
+⚠️ **Library Under Development** ⚠️
+This library is currently in **early-alpha stage**. It is not recommended for production use, and APIs may change as development progresses.
 
 ## Installation
 
@@ -8,19 +9,6 @@ react-navigation-reanimated-top-tabs
 npm install react-navigation-reanimated-top-tabs
 ```
 
-## Usage
-
-TODO.
-
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+```sh
+yarn add react-navigation-reanimated-top-tabs
+```

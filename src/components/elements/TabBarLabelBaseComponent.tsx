@@ -3,9 +3,9 @@ import Reanimated, {
   interpolateColor,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { useTabContext } from '../../hooks/TopTab.hooks';
+import { useTabContext } from '../../hooks/Tab.hooks';
 
-interface TabBarLabelTypes {
+export interface TabBarLabelTypes {
   focused: boolean;
   index: number;
   title: string;

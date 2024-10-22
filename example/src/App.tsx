@@ -1,7 +1,6 @@
 import {
   createReanimatedTopTabNavigator,
-  ScrollView,
-  TabBarLabelBaseComponent,
+  Tab,
 } from 'react-navigation-reanimated-top-tabs';
 import { NavigationContainer, useRoute } from '@react-navigation/native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -15,7 +14,7 @@ const DumpScreen = () => {
   const { name } = useRoute();
 
   return (
-    <ScrollView>
+    <Tab.ScrollView>
       <Reanimated.View style={{ flex: 1, backgroundColor: name }}>
         {new Array(25).fill(0).map((_, index) => (
           <Reanimated.View
@@ -26,7 +25,7 @@ const DumpScreen = () => {
           </Reanimated.View>
         ))}
       </Reanimated.View>
-    </ScrollView>
+    </Tab.ScrollView>
   );
 };
 
@@ -35,7 +34,7 @@ const Test = () => {
     <Stack.Navigator
       config={['normal', 'normal', 'minimalized']}
       screenOptions={{
-        tabBarLabel: TabBarLabelBaseComponent,
+        tabBarLabel: Tab.TabBarLabelBaseComponent,
       }}
       HeaderComponent={() => (
         <Reanimated.View style={{ height: 200, backgroundColor: 'purple' }} />

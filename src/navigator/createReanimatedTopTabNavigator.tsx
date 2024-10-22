@@ -12,7 +12,7 @@ import {
   type RenderTabsParams,
   TabBarBaseComponent,
 } from '../components/elements/TabBarBaseComponent';
-import { Provider } from '../context/TopTabContext';
+import { Provider } from '../context/TabContext';
 import { type ReanimatedTopTabNavigation } from '../types';
 import { omit } from 'lodash';
 import { useCallback, useMemo, useRef } from 'react';

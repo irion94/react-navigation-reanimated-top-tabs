@@ -6,7 +6,7 @@ import Reanimated, {
   type SharedValue,
   useAnimatedReaction,
 } from 'react-native-reanimated';
-import { useTabContext } from '../../hooks/TopTab.hooks';
+import { useTabContext } from '../../hooks/Tab.hooks';
 
 export interface Route {
   key: string;
@@ -22,7 +22,7 @@ export interface RenderTabsParams {
   position: SharedValue<number>;
 }
 
-interface TabBarProps extends RenderTabsParams {
+export interface TabBarProps extends RenderTabsParams {
   children?: React.ReactNode;
   navigate: (route: Route) => void;
   style?: AnimatedStyle;

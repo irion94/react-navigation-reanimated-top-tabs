@@ -9,7 +9,7 @@ import Reanimated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { useTabContext } from '../../hooks/TopTab.hooks';
+import { useTabContext } from '../../hooks/Tab.hooks';
 
 //TODO: types
 export const GestureWrapper = ({ children }: any) => {

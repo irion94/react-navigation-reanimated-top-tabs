@@ -7,8 +7,8 @@ import {
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
-import { useScreenRefs } from '../hooks/TopTab.hooks';
-import { TopTabContextHooks } from './TopTabContext.hooks';
+import { useScreenRefs } from '../hooks/Tab.hooks';
+import { TabContextHooks } from './TabContext.hooks';
 
 export const Context = createContext<ReanimatedTopTabNavigation.ContextType>(
   {} as ReanimatedTopTabNavigation.ContextType
@@ -69,7 +69,7 @@ export const Provider = memo(
       }
     );
 
-    TopTabContextHooks.useResetApproachingScreenScrollOffset({
+    TabContextHooks.useResetApproachingScreenScrollOffset({
       screenRefs,
       currentYPosition,
       screenProperties,

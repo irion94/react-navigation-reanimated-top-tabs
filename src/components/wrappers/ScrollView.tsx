@@ -10,7 +10,7 @@ import {
   useScreenProperties,
   useScreenScrollable,
   useTabContext,
-} from '../../hooks/TopTab.hooks';
+} from '../../hooks/Tab.hooks';
 import { useRef } from 'react';
 import { useRoute } from '@react-navigation/native';
 

@@ -1,5 +1,5 @@
 import { useRoute } from '@react-navigation/native';
-import { Context } from '../context/TopTabContext';
+import { Context } from '../context/TabContext';
 import { useContext } from 'react';
 import {
   useAnimatedProps,
@@ -11,7 +11,14 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWindowDimensions } from 'react-native';
 
-export const useTabContext = () => useContext(Context);
+export const useTabContext = () => {
+  if (__DEV__) {
+    console.warn(
+      '[react-navigation-reanimated-top-tabs]: You are directly using the tab context, which may lead to unexpected behavior. Please use the provided hooks or API for better stability.'
+    );
+  }
+  return useContext(Context);
+};
 
 export const useScreenGesture = () => {
   const { key } = useRoute();
@@ -93,6 +100,7 @@ export const useHeader = () => {
   return { hideHeader };
 };
 
+//TODO: make it private
 export const useScreenRefs = (keys: string[]) => {
   const refs = {
     current: keys.reduce(
