@@ -10,14 +10,7 @@ npm install react-navigation-reanimated-top-tabs
 
 ## Usage
 
-
-```js
-import { multiply } from 'react-navigation-reanimated-top-tabs';
-
-// ...
-
-const result = await multiply(3, 7);
-```
+TODO.
 
 
 ## Contributing
