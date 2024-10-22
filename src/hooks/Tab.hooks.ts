@@ -10,12 +10,20 @@ import {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWindowDimensions } from 'react-native';
+import * as React from 'react';
+import { HeaderHeightContext } from '@react-navigation/elements';
 
 export const useTabContext = () => {
   if (__DEV__) {
-    console.warn(
-      '[react-navigation-reanimated-top-tabs]: You are directly using the tab context, which may lead to unexpected behavior. Please use the provided hooks or API for better stability.'
-    );
+    const stack = new Error().stack;
+    const isOutsideLibrary =
+      stack && !stack.includes('react-navigation-reanimated-top-tabs');
+
+    if (isOutsideLibrary) {
+      console.warn(
+        '[react-navigation-reanimated-top-tabs]: You are directly using the tab context, which may lead to unexpected behavior. Please use the provided hooks or API for better stability.'
+      );
+    }
   }
   return useContext(Context);
 };
@@ -34,7 +42,7 @@ export const useScreenGesture = () => {
 export const useScreenScrollable = () => {
   const { key } = useRoute();
   const { height } = useWindowDimensions();
-  const { bottom } = useSafeAreaInsets();
+  const { bottom, top } = useSafeAreaInsets();
   const {
     currentYPosition,
     gestureEnabled,
@@ -44,9 +52,7 @@ export const useScreenScrollable = () => {
     transformationY,
   } = useTabContext();
 
-  //TODO: Navigation header hook is available if Tabs are rendered inside the Stack (createNavigationStack())
-  //useHeaderHeight();
-  const navigationHeader = 50;
+  const navigationHeader = React.useContext(HeaderHeightContext) ?? 0;
 
   const animatedProps = useAnimatedProps(() => ({
     scrollEnabled:
@@ -67,6 +73,7 @@ export const useScreenScrollable = () => {
   const style = useAnimatedStyle(() => ({
     minHeight:
       height -
+      top -
       topTabHeight.value -
       oppositeHeaderState.value -
       navigationHeader,
