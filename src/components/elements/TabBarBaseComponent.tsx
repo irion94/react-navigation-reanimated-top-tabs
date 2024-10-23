@@ -72,7 +72,7 @@ export const TabBarBaseComponent = ({
             {route.tabBarLabel ? (
               route.tabBarLabel()
             ) : (
-              <Text style={{ color: 'red' }}>{route.title}</Text>
+              <Text style={styles.label}>{route.title}</Text>
             )}
           </Pressable>
         ))}
@@ -88,6 +88,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  label: {
+    color: 'red',
   },
   wrapper: {
     width: '100%',

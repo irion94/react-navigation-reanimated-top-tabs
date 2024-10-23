@@ -7,6 +7,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Reanimated from 'react-native-reanimated';
 import { Text } from 'react-native';
+import { useHeader } from '../../src/hooks/Tab.hooks';
 
 const Stack = createReanimatedTopTabNavigator();
 
@@ -19,7 +20,11 @@ const DumpScreen = () => {
         {new Array(25).fill(0).map((_, index) => (
           <Reanimated.View
             key={index}
-            style={{ height: 50, alignItems: 'center' }}
+            style={{
+              height: 50,
+              alignItems: 'center',
+              backgroundColor: index % 2 ? 'green' : 'yellow',
+            }}
           >
             <Text>{index}</Text>
           </Reanimated.View>
@@ -29,16 +34,23 @@ const DumpScreen = () => {
   );
 };
 
+const HeaderComponent = () => {
+  const { defaultStyle } = useHeader();
+  return (
+    <Reanimated.View
+      style={[{ height: 200, backgroundColor: 'purple' }, defaultStyle]}
+    />
+  );
+};
+
 const Test = () => {
   return (
     <Stack.Navigator
-      config={['normal', 'normal', 'minimalized']}
+      config={['normal', 'minimalized', 'normal']}
       screenOptions={{
         tabBarLabel: Tab.TabBarLabelBaseComponent,
       }}
-      HeaderComponent={() => (
-        <Reanimated.View style={{ height: 200, backgroundColor: 'purple' }} />
-      )}
+      HeaderComponent={HeaderComponent}
     >
       <Stack.Screen name={'blue'} component={DumpScreen} />
       <Stack.Screen name={'red'} component={DumpScreen} />

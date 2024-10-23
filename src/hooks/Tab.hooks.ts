@@ -1,5 +1,6 @@
 import { useRoute } from '@react-navigation/native';
 import { Context } from '../context/TabContext';
+import * as React from 'react';
 import { useContext } from 'react';
 import {
   interpolate,
@@ -11,22 +12,14 @@ import {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWindowDimensions } from 'react-native';
-import * as React from 'react';
 import { HeaderHeightContext } from '@react-navigation/elements';
 
-export const useTabContext = () => {
-  if (__DEV__) {
-    const stack = new Error().stack;
-    const isOutsideLibrary =
-      stack && !stack.includes('react-navigation-reanimated-top-tabs');
+export const useTabContext = () => useContext(Context);
 
-    if (isOutsideLibrary) {
-      console.warn(
-        '[react-navigation-reanimated-top-tabs]: You are directly using the tab context, which may lead to unexpected behavior. Please use the provided hooks or API for better stability.'
-      );
-    }
-  }
-  return useContext(Context);
+// returns read-only property
+export const useTabOffset = () => {
+  const { transformationX } = useTabContext();
+  return useDerivedValue(() => transformationX.value);
 };
 
 export const useScreenGesture = () => {
@@ -53,7 +46,7 @@ export const useScreenScrollable = () => {
     transformationY,
   } = useTabContext();
 
-  const navigationHeader = React.useContext(HeaderHeightContext) ?? 0;
+  const navigationHeader = React.useContext(HeaderHeightContext) ?? top;
 
   const animatedProps = useAnimatedProps(() => ({
     scrollEnabled:
@@ -74,7 +67,6 @@ export const useScreenScrollable = () => {
   const style = useAnimatedStyle(() => ({
     minHeight:
       height -
-      top -
       topTabHeight.value -
       oppositeHeaderState.value -
       navigationHeader,

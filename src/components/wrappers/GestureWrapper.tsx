@@ -57,6 +57,7 @@ export const GestureWrapper = ({ children }: any) => {
       Gesture.Pan()
         .activeOffsetY([-10, 10])
         .onTouchesMove(({ state }, stateManager) => {
+          'worklet';
           const current = Object.values(screenProperties).map(
             ({ scrollY }) => scrollY
           )[currentScreenIndex.value];
@@ -66,6 +67,7 @@ export const GestureWrapper = ({ children }: any) => {
           }
         })
         .onUpdate(({ translationY }) => {
+          'worklet';
           if (translationY <= -headerHeight.value) {
             runOnJS(_scrollTo)(
               currentScreenIndex.value,
@@ -77,6 +79,7 @@ export const GestureWrapper = ({ children }: any) => {
             currentYPosition.value + translationY - movedY.value;
         })
         .onEnd(({ translationY, velocityY }) => {
+          'worklet';
           const gestureValue = translationY + velocityY * 0.2;
           const changeOffset = 0.2 * headerHeight.value;
 
@@ -98,6 +101,7 @@ export const GestureWrapper = ({ children }: any) => {
           }
         })
         .onFinalize(() => {
+          'worklet';
           movedY.value = 0;
         })
         .simultaneousWithExternalGesture(

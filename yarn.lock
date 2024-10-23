@@ -3491,7 +3491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/elements@npm:^1.3.31":
+"@react-navigation/elements@npm:1.3.31, @react-navigation/elements@npm:^1.3.31":
   version: 1.3.31
   resolution: "@react-navigation/elements@npm:1.3.31"
   peerDependencies:
@@ -13043,6 +13043,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.20.0
     "@expo/metro-runtime": ~3.2.3
+    "@react-navigation/elements": 1.3.31
     "@react-navigation/native": 6.1.18
     "@react-navigation/routers": ^6.1.9
     expo: ~51.0.28

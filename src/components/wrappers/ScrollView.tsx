@@ -14,16 +14,26 @@ import {
 import { useRef } from 'react';
 import { useRoute } from '@react-navigation/native';
 
-export interface ScreenWrapperProps
-  extends AnimatedProps<Omit<ScrollViewProps, 'onScroll'>> {}
+export type ScreenWrapperProps = AnimatedProps<
+  Omit<ScrollViewProps, 'onScroll' | 'onLayout' | 'bounces'>
+> &
+  Pick<ScrollViewProps, 'onLayout'> & {};
 
 export const ScrollView = ({
   children,
   style,
+  contentContainerStyle,
+  onLayout,
   ...props
 }: ScreenWrapperProps) => {
   const gesture = useScreenGesture();
-  const { style: animatedStyle, ...scrollProps } = useScreenScrollable();
+  const {
+    style: _style,
+    contentContainerStyle: _contentContainerStyle,
+    onScroll,
+    bounces,
+    animatedProps,
+  } = useScreenScrollable();
   const { innerLayout } = useScreenProperties();
   const { screenRefs } = useTabContext();
 
@@ -31,7 +41,8 @@ export const ScrollView = ({
 
   const _ref = useRef<Reanimated.ScrollView>(null);
 
-  const onLayout = (event: LayoutChangeEvent) => {
+  const _onLayout = (event: LayoutChangeEvent) => {
+    onLayout?.(event);
     innerLayout.value = event.nativeEvent.layout;
     screenRefs.setRef(key, _ref);
   };
@@ -39,12 +50,18 @@ export const ScrollView = ({
   return (
     <GestureDetector gesture={gesture}>
       <Reanimated.ScrollView
-        {...scrollProps}
-        {...props}
         ref={_ref}
-        contentContainerStyle={_style.contentContainerStyle}
-        onLayout={onLayout}
-        style={[style, animatedStyle]}
+        contentContainerStyle={[
+          _contentContainerStyle,
+          styleSheet.contentContainerStyle,
+          contentContainerStyle,
+        ]}
+        onLayout={_onLayout}
+        style={[_style, style]}
+        onScroll={onScroll}
+        bounces={bounces}
+        animatedProps={animatedProps}
+        {...props}
       >
         {children}
       </Reanimated.ScrollView>
@@ -52,7 +69,7 @@ export const ScrollView = ({
   );
 };
 
-const _style = StyleSheet.create({
+const styleSheet = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1,
   },

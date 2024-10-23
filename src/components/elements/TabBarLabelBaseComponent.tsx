@@ -3,7 +3,7 @@ import Reanimated, {
   interpolateColor,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { useTabContext } from '../../hooks/Tab.hooks';
+import { useTabOffset } from '../../hooks/Tab.hooks';
 
 export interface TabBarLabelTypes {
   focused: boolean;
@@ -15,7 +15,7 @@ export const TabBarLabelBaseComponent = ({
   index,
   ...props
 }: TabBarLabelTypes) => {
-  const { transformationX } = useTabContext();
+  const transformationX = useTabOffset();
 
   const style = useAnimatedStyle(
     () => ({

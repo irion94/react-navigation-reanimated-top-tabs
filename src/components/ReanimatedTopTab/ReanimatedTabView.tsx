@@ -78,6 +78,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
           .failOffsetY(10)
           .activeOffsetX([-20, 20])
           .onChange((event) => {
+            'worklet';
             scrollPosition.value = AnimationHelper.onChange(
               event,
               scrollPosition.value,
@@ -86,6 +87,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
             );
           })
           .onEnd((event) => {
+            'worklet';
             const state = AnimationHelper.onEnd(
               event,
               minimumValueToChangeView,
@@ -189,7 +191,6 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
   }
 );
 
-//NOTE: purposely use of StyleSheet - simplify migration to library
 const defaultStyles = StyleSheet.create({
   flex: {
     flex: 1,
