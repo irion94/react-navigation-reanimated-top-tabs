@@ -3,7 +3,8 @@ import Reanimated, {
   interpolateColor,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { useTabOffset } from '../../hooks/Tab.hooks';
+
+import { useTabOffset } from '../../hooks/useTabOffset';
 
 export interface TabBarLabelTypes {
   focused: boolean;

@@ -6,7 +6,8 @@ import Reanimated, {
   type SharedValue,
   useAnimatedReaction,
 } from 'react-native-reanimated';
-import { useTabContext } from '../../hooks/Tab.hooks';
+
+import { useTabContext } from '../../hooks/useTabContext';
 
 export interface Route {
   key: string;

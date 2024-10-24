@@ -12,17 +12,14 @@ import {
   type RenderTabsParams,
   TabBarBaseComponent,
 } from '../components/elements/TabBarBaseComponent';
-import { Provider } from '../context/TabContext';
+import { Provider } from '../context/Context';
 import { type ReanimatedTopTabNavigation } from '../types';
 import { omit } from 'lodash';
-import { useCallback, useMemo, useRef } from 'react';
-import { Gesture } from 'react-native-gesture-handler';
-import Reanimated, {
-  makeMutable,
-  type SharedValue,
-} from 'react-native-reanimated';
+import { useCallback, useMemo } from 'react';
+import Reanimated, { type SharedValue } from 'react-native-reanimated';
 import type { ReanimatedTabViewTypes } from '../components/ReanimatedTopTab/types';
 import { ReanimatedTabView } from '../components/ReanimatedTopTab/ReanimatedTabView';
+import { ContextHooks } from '../context/Context.hooks';
 
 const TabViewNavigator = ({
   HeaderComponent,
@@ -51,31 +48,10 @@ const TabViewNavigator = ({
   if (!config) {
     _config = state.routes.map(() => 'normal');
   }
-  const screenProperties = useRef(
-    state.routes.reduce(
-      (prev, route) => ({
-        ...prev,
-        [route.key]: {
-          innerLayout: makeMutable({
-            height: 0,
-            width: 0,
-            x: 0,
-            y: 0,
-          }),
-          nativeGesture: Gesture.Native(),
-          outerLayout: makeMutable({
-            height: 0,
-            width: 0,
-            x: 0,
-            y: 0,
-          }),
-          scrollY: makeMutable(0),
-        },
-      }),
-      {} as ReanimatedTopTabNavigation.ContextType['screenProperties']
-    )
-  ).current;
 
+  const context = ContextHooks.usePrepareContext({ state });
+
+  //NOTE: all belows reefers to Tabs component directly. Consider to move it somewhere
   const onIndexChange =
     (
       currentScreenIndex: SharedValue<number>,
@@ -142,7 +118,7 @@ const TabViewNavigator = ({
     descriptors[route.key]?.render();
 
   return (
-    <Provider config={_config} screenProperties={screenProperties}>
+    <Provider config={_config} context={context}>
       {({
         currentScreenIndex,
         gestureEnabled,

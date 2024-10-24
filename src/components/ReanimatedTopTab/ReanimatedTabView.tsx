@@ -5,7 +5,7 @@ import {
   GestureDetector,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
-import Animated, {
+import Reanimated, {
   Extrapolation,
   interpolate,
   LinearTransition,
@@ -170,10 +170,10 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
 
     return (
       <GestureHandlerRootView style={defaultStyles.flex}>
-        <Animated.View layout={LinearTransition} style={defaultStyles.flex}>
+        <Reanimated.View layout={LinearTransition} style={defaultStyles.flex}>
           {renderTabBar ? renderTabBar({ navigationState, position }) : null}
           <GestureDetector gesture={panGesture}>
-            <Animated.View
+            <Reanimated.View
               layout={LinearTransition}
               style={[
                 scrollPositionStyle,
@@ -183,9 +183,9 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
               ]}
             >
               {Routes}
-            </Animated.View>
+            </Reanimated.View>
           </GestureDetector>
-        </Animated.View>
+        </Reanimated.View>
       </GestureHandlerRootView>
     );
   }

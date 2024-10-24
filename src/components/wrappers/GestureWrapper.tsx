@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, {
   Easing,
@@ -9,18 +9,21 @@ import Reanimated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { useTabContext } from '../../hooks/Tab.hooks';
 
-//TODO: types
-export const GestureWrapper = ({ children }: any) => {
+import { useTabContext } from '../../hooks/useTabContext';
+
+interface GestureWrapperProps {
+  children: React.ReactNode;
+}
+
+export const GestureWrapper = ({ children }: GestureWrapperProps) => {
   const {
+    context,
     currentScreenIndex,
     currentYPosition,
     gestureEnabled,
     headerHeight,
-    screenProperties,
     transformationY,
-    screenRefs,
   } = useTabContext();
 
   const movedY = useSharedValue(0);
@@ -43,8 +46,11 @@ export const GestureWrapper = ({ children }: any) => {
   );
 
   const _scrollTo = (index: number, value: number = 0) => {
-    const { scrollTo } = Object.values(screenRefs.refs.current)[index]
-      ?.current ?? { scrollTo: () => null };
+    const { scrollTo } = context.screen.getRef(
+      context.route.getKeyForIndex(index)
+    ).current ?? {
+      scrollTo: () => {},
+    };
 
     scrollTo({
       y: value,
@@ -58,7 +64,7 @@ export const GestureWrapper = ({ children }: any) => {
         .activeOffsetY([-10, 10])
         .onTouchesMove(({ state }, stateManager) => {
           'worklet';
-          const current = Object.values(screenProperties).map(
+          const current = Object.values(context.screen.properties).map(
             ({ scrollY }) => scrollY
           )[currentScreenIndex.value];
 
@@ -105,7 +111,7 @@ export const GestureWrapper = ({ children }: any) => {
           movedY.value = 0;
         })
         .simultaneousWithExternalGesture(
-          ...Object.values(screenProperties).map(
+          ...Object.values(context.screen.properties).map(
             ({ nativeGesture }) => nativeGesture
           )
         )

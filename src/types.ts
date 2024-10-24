@@ -3,15 +3,11 @@ import * as React from 'react';
 import { type ReactNode } from 'react';
 import { type LayoutRectangle } from 'react-native';
 import { type NativeGesture } from 'react-native-gesture-handler';
-import { type SharedValue } from 'react-native-reanimated';
+import Reanimated, { type SharedValue } from 'react-native-reanimated';
 import { type StackNavigationOptions } from '@react-navigation/stack';
 
 export namespace ReanimatedTopTabNavigation {
   export interface ContextType {
-    screenRefs: {
-      refs: { current: Record<string, { current: any }> };
-      setRef(key: string, ref: any): void;
-    };
     closeOffset: SharedValue<number>;
     config: string[];
     currentScreenIndex: SharedValue<number>;
@@ -19,19 +15,30 @@ export namespace ReanimatedTopTabNavigation {
     gestureEnabled: SharedValue<boolean>;
     headerHeight: SharedValue<number>;
     navHeight: SharedValue<number>;
-    screenProperties: Record<
-      string,
-      {
-        innerLayout: SharedValue<LayoutRectangle>;
-        nativeGesture: NativeGesture;
-        outerLayout: SharedValue<LayoutRectangle>;
-        scrollY: SharedValue<number>;
-      }
-    >;
     topTabHeight: SharedValue<number>;
-    topTapNativeRef: NativeGesture;
+    topTabNativeGesture: NativeGesture;
     transformationX: SharedValue<number>;
     transformationY: SharedValue<number>;
+    context: {
+      screen: {
+        properties: Record<
+          string,
+          {
+            innerLayout: SharedValue<LayoutRectangle>;
+            nativeGesture: NativeGesture;
+            outerLayout: SharedValue<LayoutRectangle>;
+            scrollY: SharedValue<number>;
+            scrollRef: { current: Reanimated.ScrollView | null };
+          }
+        >;
+        setRef(key: string, ref: Reanimated.ScrollView | null): void;
+        getRef(key: string): { current: Reanimated.ScrollView | null };
+      };
+      route: {
+        map: Record<number, string>;
+        getKeyForIndex(index: number): string;
+      };
+    };
   }
 
   export interface TabViewNavigatorProps {
@@ -45,10 +52,7 @@ export namespace ReanimatedTopTabNavigation {
     screenOptions?: StackNavigationOptions;
   }
 
-  export type TopTabContextProps = Pick<
-    ContextType,
-    'screenProperties' | 'config'
-  > & {
+  export type TopTabContextProps = Pick<ContextType, 'config' | 'context'> & {
     children: (props: ContextType) => React.ReactNode;
   };
 
