@@ -53,19 +53,6 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
     []
   );
 
-  const _scrollTo = (index: number, value: number = 0) => {
-    const { scrollTo } = context.screen.getRef(
-      context.route.getKeyForIndex(index)
-    ).current ?? {
-      scrollTo: () => {},
-    };
-
-    scrollTo({
-      y: value,
-      animated: false,
-    });
-  };
-
   const gesture = useMemo(
     () =>
       Gesture.Pan()
@@ -82,13 +69,6 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
         })
         .onUpdate(({ translationY }) => {
           'worklet';
-          if (translationY <= -headerHeight.value) {
-            runOnJS(_scrollTo)(
-              currentScreenIndex.value,
-              Math.abs(translationY + headerHeight.value)
-            );
-          }
-
           transformationY.value =
             currentYPosition.value + translationY - movedY.value;
         })

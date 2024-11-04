@@ -37,6 +37,10 @@ const useResetApproachingScreenScrollOffset = ({
   ReanimatedTopTabNavigation.ContextType,
   'context' | 'currentYPosition' | 'transformationX'
 >) => {
+  const screenOffsets = useDerivedValue(() =>
+    Object.values(context.screen.properties).map(({ scrollY }) => scrollY.value)
+  );
+
   const resetApproachingScreenOffset = (
     index: number,
     shouldReset: boolean
@@ -56,9 +60,7 @@ const useResetApproachingScreenScrollOffset = ({
       const approachingIndex = ContextHelpers.getTargetIndex(current, previous);
 
       const approachingScreenOffset =
-        Object.values(context.screen.properties).map(
-          ({ scrollY }) => scrollY.value
-        )[approachingIndex] ?? -1;
+        screenOffsets.value[approachingIndex] ?? -1;
 
       runOnJS(resetApproachingScreenOffset)(
         approachingIndex,
