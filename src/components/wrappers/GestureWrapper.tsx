@@ -6,6 +6,7 @@ import Reanimated, {
   runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
@@ -29,6 +30,13 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
   const movedY = useSharedValue(0);
 
   const gestureRef = useRef(Gesture.Pan());
+
+  const currentScreenScrollOffset = useDerivedValue(
+    () =>
+      Object.values(context.screen.properties).map(({ scrollY }) => scrollY)[
+        currentScreenIndex.value
+      ]?.value ?? 0
+  );
 
   const withTimingConfig = {
     duration: 300,
@@ -64,11 +72,11 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
         .activeOffsetY([-10, 10])
         .onTouchesMove(({ state }, stateManager) => {
           'worklet';
-          const current = Object.values(context.screen.properties).map(
-            ({ scrollY }) => scrollY
-          )[currentScreenIndex.value];
-
-          if ((current?.value ?? 0) > 0 && state !== 4 && state !== 3) {
+          if (
+            currentScreenScrollOffset.value > 0 &&
+            state !== 4 &&
+            state !== 3
+          ) {
             stateManager.fail();
           }
         })
