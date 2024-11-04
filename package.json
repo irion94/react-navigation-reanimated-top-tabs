@@ -91,7 +91,7 @@
     "@react-navigation/native": ">=6.0.0",
     "@react-navigation/routers": ">=6.0.0",
     "@react-navigation/stack": ">=6.0.0",
-    "lodash": "^4.17.21",
+    "lodash": ">=4.17.0",
     "react": ">=16.8.0 || ^17.0.0 || ^18.0.0",
     "react-native": ">=0.60.0",
     "react-native-gesture-handler": ">=2.0.0",

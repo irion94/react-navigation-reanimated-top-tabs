@@ -5,6 +5,7 @@ import { useTabContext } from './useTabContext';
 import * as React from 'react';
 import { HeaderHeightContext } from '@react-navigation/elements';
 import {
+  clamp,
   useAnimatedProps,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -47,7 +48,11 @@ export const useScreenScrollable = () => {
   );
 
   const difference = useDerivedValue(() =>
-    Math.abs(screen.outerLayout.value.height - screen.innerLayout.value.height)
+    clamp(
+      screen.outerLayout.value.height - screen.innerLayout.value.height,
+      0,
+      Infinity
+    )
   );
 
   const style = useAnimatedStyle(() => ({
