@@ -82,6 +82,7 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
         })
         .onUpdate(({ translationY }) => {
           'worklet';
+          //TODO: here is gesture extension that affects the scrollview, but it creates the buggy case
           if (translationY <= -headerHeight.value) {
             runOnJS(_scrollTo)(
               currentScreenIndex.value,
