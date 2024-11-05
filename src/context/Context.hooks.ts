@@ -13,7 +13,7 @@ import type {
   TabNavigationState,
 } from '@react-navigation/native';
 import { Gesture } from 'react-native-gesture-handler';
-import { assign } from 'lodash';
+import { assign, throttle } from 'lodash';
 import { ContextHelpers } from './Context.helpers';
 
 /**
@@ -205,6 +205,7 @@ const useTransformHeaderOnTabChange = ({
   config,
 }: Pick<ReanimatedTopTabNavigation.ContextType, 'config'>) => {
   const headerHeight = useSharedValue(0);
+  const isHeaderHeightSet = useSharedValue(false);
   const transformationY = useSharedValue(0);
   const transformationX = useSharedValue(0);
   const currentYPosition = useSharedValue(0);
@@ -230,6 +231,29 @@ const useTransformHeaderOnTabChange = ({
     [config]
   );
 
+  // NOTE: headerHeight is setting onLayout, so at very first render it has value equal 0,
+  // but right after the header content renders onLayout calls once again.
+  // That's why we use debounce
+  const debouncedSetIsHeaderSet = throttle(() => {
+    isHeaderHeightSet.value = true;
+  }, 10);
+
+  const cancel = () => {
+    debouncedSetIsHeaderSet.cancel();
+  };
+
+  useAnimatedReaction(
+    () => headerHeight.value,
+    (prepared, previous) => {
+      runOnJS(cancel)();
+
+      if (previous !== prepared) {
+        runOnJS(debouncedSetIsHeaderSet)();
+      }
+    },
+    []
+  );
+
   useAnimatedReaction(
     () => transformationX.value,
     (value) => {
@@ -243,7 +267,13 @@ const useTransformHeaderOnTabChange = ({
     }
   );
 
-  return { transformationY, transformationX, currentYPosition, headerHeight };
+  return {
+    transformationY,
+    transformationX,
+    currentYPosition,
+    headerHeight,
+    isHeaderHeightSet,
+  };
 };
 
 export const ContextHooks = {

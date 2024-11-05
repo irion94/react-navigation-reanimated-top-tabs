@@ -14,6 +14,7 @@ export namespace ReanimatedTopTabNavigation {
     currentYPosition: SharedValue<number>;
     gestureEnabled: SharedValue<boolean>;
     headerHeight: SharedValue<number>;
+    isHeaderHeightSet: SharedValue<boolean>;
     navHeight: SharedValue<number>;
     topTabHeight: SharedValue<number>;
     topTabNativeGesture: NativeGesture;

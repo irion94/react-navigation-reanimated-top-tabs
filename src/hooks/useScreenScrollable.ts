@@ -25,6 +25,7 @@ export const useScreenScrollable = () => {
     context,
     topTabHeight,
     transformationY,
+    isHeaderHeightSet,
   } = useTabContext();
 
   const screen = useScreenProperties();
@@ -33,7 +34,8 @@ export const useScreenScrollable = () => {
 
   const animatedProps = useAnimatedProps(() => ({
     scrollEnabled:
-      !gestureEnabled.value || currentYPosition.value === -headerHeight.value,
+      isHeaderHeightSet.value &&
+      (!gestureEnabled.value || currentYPosition.value === -headerHeight.value),
   }));
 
   const onScroll = useAnimatedScrollHandler(({ contentOffset }) => {
