@@ -69,6 +69,7 @@ export const useScreenScrollable = () => {
     bounces: false,
     contentContainerStyle: { paddingBottom: bottom },
     onScroll,
+    overScrollMode: 'never' as const,
     style,
   };
 };

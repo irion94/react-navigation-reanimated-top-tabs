@@ -31,6 +31,7 @@ export const ScrollView = ({
     onScroll,
     bounces,
     animatedProps,
+    overScrollMode,
   } = useScreenScrollable();
   const { innerLayout } = useScreenProperties();
   const { context } = useTabContext();
@@ -58,6 +59,7 @@ export const ScrollView = ({
         onScroll={onScroll}
         bounces={bounces}
         animatedProps={animatedProps}
+        overScrollMode={overScrollMode}
         {...props}
       >
         {children}
