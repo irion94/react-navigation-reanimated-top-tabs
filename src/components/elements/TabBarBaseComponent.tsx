@@ -3,38 +3,23 @@ import { Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
 import Reanimated, {
   type AnimatedStyle,
   interpolate,
-  type SharedValue,
   useAnimatedReaction,
 } from 'react-native-reanimated';
 
 import { useTabContext } from '../../hooks/useTabContext';
+import { type ReanimatedTabViewTypes } from '../ReanimatedTopTab/types';
 
-export interface Route {
-  key: string;
-  name?: string;
-  tabBarLabel?: () => React.ReactNode;
-  title?: string;
-}
-
-export type NavigationState = { index: number; routes: Route[] };
-
-export interface RenderTabsParams {
-  navigationState: NavigationState;
-  position: SharedValue<number>;
-}
-
-export interface TabBarProps extends RenderTabsParams {
+export interface TabBarProps extends ReanimatedTabViewTypes.RenderTabsParams {
   children?: React.ReactNode;
-  navigate: (route: Route) => void;
   style?: AnimatedStyle;
 }
 
 export const TabBarBaseComponent = ({
   children,
-  navigate,
   navigationState,
   position,
   style,
+  onIndexChange,
 }: TabBarProps) => {
   const layout = useWindowDimensions();
 
@@ -62,12 +47,12 @@ export const TabBarBaseComponent = ({
       }}
     >
       <Reanimated.View style={[styles.wrapper, style]}>
-        {navigationState.routes.map((route) => (
+        {navigationState.routes.map((route, index) => (
           <Pressable
             style={styles.labelWrapper}
             key={route.key}
             onPress={() => {
-              navigate(route);
+              onIndexChange(index);
             }}
           >
             {route.tabBarLabel ? (

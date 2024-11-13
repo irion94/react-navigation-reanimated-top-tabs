@@ -47,8 +47,9 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
 
   useAnimatedReaction(
     () => gestureEnabled.value,
-    (nextValue) => {
-      runOnJS(setGestureEnabled)(nextValue);
+    (next, prev) => {
+      if (next === prev) return;
+      runOnJS(setGestureEnabled)(next);
     },
     []
   );
@@ -57,13 +58,9 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
     () =>
       Gesture.Pan()
         .activeOffsetY([-10, 10])
-        .onTouchesMove(({ state }, stateManager) => {
+        .onTouchesMove((_, stateManager) => {
           'worklet';
-          if (
-            currentScreenScrollOffset.value > 0 &&
-            state !== 4 &&
-            state !== 3
-          ) {
+          if (currentScreenScrollOffset.value > 0 || !gestureEnabled.value) {
             stateManager.fail();
           }
         })

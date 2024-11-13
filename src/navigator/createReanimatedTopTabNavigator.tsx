@@ -1,21 +1,17 @@
 import {
   createNavigatorFactory,
   type ParamListBase,
-  TabActions,
   type TabNavigationState,
   TabRouter,
   useNavigationBuilder,
 } from '@react-navigation/native';
 import type { DefaultRouterOptions } from '@react-navigation/routers';
 import { GestureWrapper } from '../components/wrappers/GestureWrapper';
-import {
-  type RenderTabsParams,
-  TabBarBaseComponent,
-} from '../components/elements/TabBarBaseComponent';
+import { TabBarBaseComponent } from '../components/elements/TabBarBaseComponent';
 import { Provider } from '../context/Context';
 import { type ReanimatedTopTabNavigation } from '../types';
 import { omit } from 'lodash';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import Reanimated, { type SharedValue } from 'react-native-reanimated';
 import type { ReanimatedTabViewTypes } from '../components/ReanimatedTopTab/types';
 import { ReanimatedTabView } from '../components/ReanimatedTopTab/ReanimatedTabView';
@@ -58,7 +54,6 @@ const TabViewNavigator = ({
       gestureEnabled: SharedValue<boolean>
     ) =>
     (index: number) => {
-      navigation.navigate(state.routes[index]?.name ?? '');
       currentScreenIndex.value = index;
       switch (_config[index]) {
         case 'normal': {
@@ -70,6 +65,7 @@ const TabViewNavigator = ({
           break;
         }
       }
+      navigation.navigate(state.routes[index]?.name ?? '');
     };
 
   const navigationState = useMemo(
@@ -98,20 +94,6 @@ const TabViewNavigator = ({
       }),
     }),
     [state]
-  );
-
-  const navigate = (route: any) => {
-    navigation.dispatch({
-      ...TabActions.jumpTo(route.name, route.params),
-      target: state.key,
-    });
-  };
-
-  const renderTabBar = useCallback(
-    (props: RenderTabsParams) => (
-      <TabBarComponent {...props} navigate={navigate} />
-    ),
-    []
   );
 
   const renderScene = ({ route }: ReanimatedTabViewTypes.SceneProps) =>
@@ -147,7 +129,7 @@ const TabViewNavigator = ({
                   gestureEnabled
                 )}
                 renderScene={renderScene}
-                renderTabBar={renderTabBar}
+                renderTabBar={TabBarComponent}
               />
             </GestureWrapper>
           </NavigationContent>

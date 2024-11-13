@@ -45,7 +45,6 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     const loadedScreens = useRef([
       navigationState.routes[navigationState.index],
     ]);
-    // const width = 160;
     const scrollPosition = useSharedValue(navigationState.index);
 
     const position = useDerivedValue(() => {
@@ -97,13 +96,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
             scrollPosition.value = AnimationHelper.animation(state.value);
             runOnJS(onIndexChange)(state.index);
           }),
-      [
-        minimumValueToChangeView,
-        navigationState,
-        onIndexChange,
-        scrollPosition,
-        width,
-      ]
+      [minimumValueToChangeView, navigationState, onIndexChange, width]
     );
 
     const scrollPositionStyle = useAnimatedStyle(() => ({
@@ -121,9 +114,10 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
 
     const jumpTo = React.useCallback(
       (key: string) => {
-        const newIndex = navigationState.routes.findIndex((r) => r.key === key);
+        const newIndex = navigationState.routes.findIndex(
+          (route) => route.key === key
+        );
         if (newIndex === -1) {
-          // throw
           return;
         }
         scrollPosition.value = AnimationHelper.animation(-newIndex * width);
@@ -171,7 +165,9 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     return (
       <GestureHandlerRootView style={defaultStyles.flex}>
         <Reanimated.View layout={LinearTransition} style={defaultStyles.flex}>
-          {renderTabBar ? renderTabBar({ navigationState, position }) : null}
+          {renderTabBar
+            ? renderTabBar({ navigationState, position, onIndexChange })
+            : null}
           <GestureDetector gesture={panGesture}>
             <Reanimated.View
               layout={LinearTransition}

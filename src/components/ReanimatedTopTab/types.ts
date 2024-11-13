@@ -14,15 +14,12 @@ export namespace ReanimatedTabViewTypes {
   export interface RenderTabsParams {
     navigationState: NavigationState;
     position: SharedValue<number>;
+    onIndexChange: (index: number) => void;
   }
 
   export interface SceneProps {
     jumpTo?: (key: string) => void;
     route: Route;
-  }
-
-  export interface SceneMapRoutes {
-    [key: string]: React.ReactNode;
   }
 
   export type PositionInterpolation = { input: number[]; output: number[] };
