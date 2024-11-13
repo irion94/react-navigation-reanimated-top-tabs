@@ -1,6 +1,6 @@
 {
   "name": "react-navigation-reanimated-top-tabs",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "react-navigation-reanimated-top-tabs",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
