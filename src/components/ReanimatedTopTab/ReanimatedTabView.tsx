@@ -10,6 +10,7 @@ import Reanimated, {
   interpolate,
   LinearTransition,
   runOnJS,
+  runOnUI,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
@@ -21,13 +22,13 @@ export interface ReanimatedTabViewProps {
   LazyPlaceholder?: () => React.ReactNode;
   lazy?: boolean;
   navigationState: ReanimatedTabViewTypes.NavigationState;
-  onIndexChange: (index: number) => void;
   percentageTrigger?: number;
   positionInterpolation?: ReanimatedTabViewTypes.PositionInterpolation;
   renderScene: (params: ReanimatedTabViewTypes.SceneProps) => React.ReactNode;
   renderTabBar?: (
     params: ReanimatedTabViewTypes.RenderTabsParams
   ) => React.ReactNode;
+  navigate(index: number): void;
 }
 
 export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
@@ -35,11 +36,11 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     LazyPlaceholder = () => null,
     lazy = false,
     navigationState,
-    onIndexChange,
     percentageTrigger = 0.4,
     positionInterpolation,
     renderScene,
     renderTabBar,
+    navigate,
   }) => {
     const { width } = useWindowDimensions();
     const loadedScreens = useRef([
@@ -59,22 +60,29 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
       );
     }, [positionInterpolation]);
 
-    useEffect(() => {
-      scrollPosition.value = AnimationHelper.animation(
-        -navigationState.index * width
-      );
-    }, [navigationState.index, scrollPosition, width]);
+    const _navigate = (index: number) => {
+      scrollPosition.value = AnimationHelper.animation(-index * width);
+      navigate(index);
+    };
 
     const minimumValueToChangeView = useMemo(
       () => width * percentageTrigger,
       [percentageTrigger, width]
     );
 
+    const _navigationState = useSharedValue({ size: 0, index: 0 });
+
+    useEffect(() => {
+      runOnUI(() => {
+        _navigationState.value.size = navigationState.routes.length;
+        _navigationState.value.index = navigationState.index;
+      })();
+    }, [navigationState]);
+
     const panGesture = React.useMemo(
       () =>
         Gesture.Pan()
-          .failOffsetY(-10)
-          .failOffsetY(10)
+          .failOffsetY([-10, 10])
           .activeOffsetX([-20, 20])
           .onChange((event) => {
             'worklet';
@@ -82,7 +90,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
               event,
               scrollPosition.value,
               width,
-              navigationState
+              _navigationState.value
             );
           })
           .onEnd((event) => {
@@ -91,12 +99,13 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
               event,
               minimumValueToChangeView,
               width,
-              navigationState
+              _navigationState.value
             );
             scrollPosition.value = AnimationHelper.animation(state.value);
-            runOnJS(onIndexChange)(state.index);
+            _navigationState.value.index = state.index;
+            runOnJS(navigate)(state.index);
           }),
-      [minimumValueToChangeView, navigationState, onIndexChange, width]
+      [minimumValueToChangeView, width, _navigationState]
     );
 
     const scrollPositionStyle = useAnimatedStyle(() => ({
@@ -121,9 +130,8 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
           return;
         }
         scrollPosition.value = AnimationHelper.animation(-newIndex * width);
-        onIndexChange(newIndex);
       },
-      [navigationState.routes, onIndexChange, scrollPosition, width]
+      [navigationState.routes, scrollPosition, width]
     );
 
     const chooseRender = useCallback(
@@ -166,7 +174,11 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
       <GestureHandlerRootView style={defaultStyles.flex}>
         <Reanimated.View layout={LinearTransition} style={defaultStyles.flex}>
           {renderTabBar
-            ? renderTabBar({ navigationState, position, onIndexChange })
+            ? renderTabBar({
+                navigationState,
+                position,
+                navigate: _navigate,
+              })
             : null}
           <GestureDetector gesture={panGesture}>
             <Reanimated.View

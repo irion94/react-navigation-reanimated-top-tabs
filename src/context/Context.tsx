@@ -37,6 +37,13 @@ export const Provider = memo(
       context,
     });
 
+    ContextHooks.useApproachingTabChange({
+      config,
+      gestureEnabled,
+      transformationX,
+      currentScreenIndex,
+    });
+
     return (
       <Context.Provider
         value={{

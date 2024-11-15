@@ -5,7 +5,8 @@ import type {
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import { withTiming as reanimatedWithTiming } from 'react-native-reanimated';
-import type { ReanimatedTabViewTypes } from './types';
+
+type NavigationState = { size: number; index: number };
 
 const onChange = (
   event: GestureUpdateEvent<
@@ -13,13 +14,13 @@ const onChange = (
   >,
   animationValue: number,
   width: number,
-  navigationState: ReanimatedTabViewTypes.NavigationState
+  navigationState: NavigationState
 ) => {
   'worklet';
   if (animationValue > 0) {
     return 0;
   }
-  const routesLength = navigationState.routes.length - 1;
+  const routesLength = navigationState.size - 1;
   if (animationValue < -width * routesLength) {
     return -width * routesLength;
   }
@@ -27,12 +28,12 @@ const onChange = (
 };
 
 const getIndex = (
-  navigationState: ReanimatedTabViewTypes.NavigationState,
+  navigationState: NavigationState,
   type: 'increment' | 'decrement'
 ) => {
   'worklet';
   if (type === 'increment') {
-    return navigationState.index === navigationState.routes.length - 1
+    return navigationState.index === navigationState.size - 1
       ? navigationState.index
       : navigationState.index + 1;
   }
@@ -45,7 +46,7 @@ const onEnd = (
   event: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
   minimumValueToChangeView: number,
   width: number,
-  navigationState: ReanimatedTabViewTypes.NavigationState
+  navigationState: NavigationState
 ) => {
   'worklet';
   if (event.velocityX < -200) {

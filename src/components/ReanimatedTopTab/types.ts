@@ -14,7 +14,7 @@ export namespace ReanimatedTabViewTypes {
   export interface RenderTabsParams {
     navigationState: NavigationState;
     position: SharedValue<number>;
-    onIndexChange: (index: number) => void;
+    navigate(index: number): void;
   }
 
   export interface SceneProps {

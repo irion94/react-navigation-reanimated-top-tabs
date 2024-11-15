@@ -19,7 +19,7 @@ export const TabBarBaseComponent = ({
   navigationState,
   position,
   style,
-  onIndexChange,
+  navigate,
 }: TabBarProps) => {
   const layout = useWindowDimensions();
 
@@ -52,7 +52,7 @@ export const TabBarBaseComponent = ({
             style={styles.labelWrapper}
             key={route.key}
             onPress={() => {
-              onIndexChange(index);
+              navigate(index);
             }}
           >
             {route.tabBarLabel ? (

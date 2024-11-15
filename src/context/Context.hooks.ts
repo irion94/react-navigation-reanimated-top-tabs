@@ -276,8 +276,42 @@ const useTransformHeaderOnTabChange = ({
   };
 };
 
+const useApproachingTabChange = ({
+  config,
+  transformationX,
+  gestureEnabled,
+  currentScreenIndex,
+}: Pick<
+  ReanimatedTopTabNavigation.ContextType,
+  'config' | 'transformationX' | 'currentScreenIndex' | 'gestureEnabled'
+>) => {
+  const onIndexApproach = (index: number) => {
+    'worklet';
+    currentScreenIndex.value = index;
+    switch (config[index]) {
+      case 'normal': {
+        gestureEnabled.value = true;
+        break;
+      }
+      case 'minimalized': {
+        gestureEnabled.value = false;
+        break;
+      }
+    }
+  };
+
+  useAnimatedReaction(
+    () => transformationX.value,
+    (current, previous) => {
+      const approachingIndex = ContextHelpers.getTargetIndex(current, previous);
+      onIndexApproach(approachingIndex);
+    }
+  );
+};
+
 export const ContextHooks = {
   useResetApproachingScreenScrollOffset,
   usePrepareContext,
   useTransformHeaderOnTabChange,
+  useApproachingTabChange,
 };

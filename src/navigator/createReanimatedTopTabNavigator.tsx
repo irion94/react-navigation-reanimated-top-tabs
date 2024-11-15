@@ -1,6 +1,7 @@
 import {
   createNavigatorFactory,
   type ParamListBase,
+  TabActions,
   type TabNavigationState,
   TabRouter,
   useNavigationBuilder,
@@ -12,7 +13,7 @@ import { Provider } from '../context/Context';
 import { type ReanimatedTopTabNavigation } from '../types';
 import { omit } from 'lodash';
 import { useMemo } from 'react';
-import Reanimated, { type SharedValue } from 'react-native-reanimated';
+import Reanimated from 'react-native-reanimated';
 import type { ReanimatedTabViewTypes } from '../components/ReanimatedTopTab/types';
 import { ReanimatedTabView } from '../components/ReanimatedTopTab/ReanimatedTabView';
 import { ContextHooks } from '../context/Context.hooks';
@@ -47,26 +48,11 @@ const TabViewNavigator = ({
 
   const context = ContextHooks.usePrepareContext({ state });
 
-  //NOTE: all belows reefers to Tabs component directly. Consider to move it somewhere
-  const onIndexChange =
-    (
-      currentScreenIndex: SharedValue<number>,
-      gestureEnabled: SharedValue<boolean>
-    ) =>
-    (index: number) => {
-      currentScreenIndex.value = index;
-      switch (_config[index]) {
-        case 'normal': {
-          gestureEnabled.value = true;
-          break;
-        }
-        case 'minimalized': {
-          gestureEnabled.value = false;
-          break;
-        }
-      }
-      navigation.navigate(state.routes[index]?.name ?? '');
-    };
+  const navigate = (index: number) => {
+    const route = state.routes[index];
+    if (!route) return;
+    navigation.dispatch(TabActions.jumpTo(route.name));
+  };
 
   const navigationState = useMemo(
     () => ({
@@ -101,12 +87,7 @@ const TabViewNavigator = ({
 
   return (
     <Provider config={_config} context={context}>
-      {({
-        currentScreenIndex,
-        gestureEnabled,
-        headerHeight,
-        transformationY,
-      }) => (
+      {({ headerHeight, transformationY }) => (
         <>
           <Reanimated.View
             onLayout={({ nativeEvent }) => {
@@ -124,10 +105,7 @@ const TabViewNavigator = ({
             <GestureWrapper>
               <ReanimatedTabView
                 navigationState={navigationState}
-                onIndexChange={onIndexChange(
-                  currentScreenIndex,
-                  gestureEnabled
-                )}
+                navigate={navigate}
                 renderScene={renderScene}
                 renderTabBar={TabBarComponent}
               />
