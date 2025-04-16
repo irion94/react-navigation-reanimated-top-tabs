@@ -43,7 +43,7 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
     easing: Easing.bezier(0.25, 0.1, 0.25, 1),
   } as const;
 
-  const [_gestureEnabled, setGestureEnabled] = useState(gestureEnabled.value);
+  const [_gestureEnabled, setGestureEnabled] = useState(true);
 
   useAnimatedReaction(
     () => gestureEnabled.value,
