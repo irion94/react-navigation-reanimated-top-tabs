@@ -1,5 +1,4 @@
 import { useRoute } from '@react-navigation/native';
-import { useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTabContext } from './useTabContext';
 import * as React from 'react';
@@ -13,10 +12,11 @@ import {
 } from 'react-native-reanimated';
 
 import { useScreenProperties } from './useScreenProperties';
+import { useScreenDimensions } from './useScreenDimensions';
 
 export const useScreenScrollable = () => {
   const { key } = useRoute();
-  const { height } = useWindowDimensions();
+  const { height } = useScreenDimensions();
   const { bottom, top } = useSafeAreaInsets();
   const {
     currentYPosition,
