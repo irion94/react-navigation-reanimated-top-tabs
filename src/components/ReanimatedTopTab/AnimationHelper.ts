@@ -4,7 +4,7 @@ import type {
   PanGestureChangeEventPayload,
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
-import { withTiming as reanimatedWithTiming } from 'react-native-reanimated';
+import { withTiming } from 'react-native-reanimated';
 
 type NavigationState = { size: number; index: number };
 
@@ -83,9 +83,9 @@ const onEnd = (
   };
 };
 
-const animation = (newValue: number, duration = 200) => {
+const animation = (newValue: number, duration = 350) => {
   'worklet';
-  return reanimatedWithTiming(newValue, { duration });
+  return withTiming(newValue, { duration });
 };
 
 export const AnimationHelper = {

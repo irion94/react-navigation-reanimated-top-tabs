@@ -12,6 +12,7 @@ import Reanimated, {
 } from 'react-native-reanimated';
 
 import { useTabContext } from '../../hooks/useTabContext';
+import { StyleSheet, View } from 'react-native';
 
 interface GestureWrapperProps {
   children: React.ReactNode;
@@ -124,7 +125,16 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
 
   return (
     <GestureDetector gesture={gesture}>
-      <Reanimated.View style={style}>{children}</Reanimated.View>
+      <View style={styles.container}>
+        <Reanimated.View style={style}>{children}</Reanimated.View>
+      </View>
     </GestureDetector>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    overflow: 'hidden',
+    flex: 1,
+  },
+});

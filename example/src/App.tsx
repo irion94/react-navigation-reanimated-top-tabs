@@ -1,13 +1,12 @@
+import { NavigationContainer, useRoute } from '@react-navigation/native';
+import { Text } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Reanimated from 'react-native-reanimated';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import {
   createReanimatedTopTabNavigator,
   Tab,
-  TabHooks,
 } from 'react-navigation-reanimated-top-tabs';
-import { NavigationContainer, useRoute } from '@react-navigation/native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Reanimated from 'react-native-reanimated';
-import { Text } from 'react-native';
 
 const Stack = createReanimatedTopTabNavigator();
 
@@ -89,11 +88,8 @@ const DumpScreen3 = () => {
 };
 
 const HeaderComponent = () => {
-  const { defaultStyle } = TabHooks.useHeader();
   return (
-    <Reanimated.View
-      style={[{ height: 200, backgroundColor: 'purple' }, defaultStyle]}
-    />
+    <Reanimated.View style={[{ height: 200, backgroundColor: 'purple' }]} />
   );
 };
 

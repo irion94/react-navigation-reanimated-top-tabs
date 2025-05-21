@@ -20,6 +20,7 @@ import { ContextHooks } from '../context/Context.hooks';
 
 const TabViewNavigator = ({
   HeaderComponent,
+  TopComponent,
   TabBarComponent = TabBarBaseComponent,
   children,
   config,
@@ -62,10 +63,11 @@ const TabViewNavigator = ({
           descriptors[route.key]?.options,
           'tabBarLabel'
         );
+
         const tabBarLabel = descriptors[route.key]?.options.tabBarLabel
-          ? () =>
+          ? (focused: boolean) =>
               descriptors[route.key]?.options.tabBarLabel?.({
-                focused: state.index === index,
+                focused,
                 title: descriptors[route.key]?.options.title || route.name,
                 index,
               })
@@ -88,30 +90,32 @@ const TabViewNavigator = ({
   return (
     <Provider config={_config} context={context}>
       {({ headerHeight, transformationY }) => (
-        <>
-          <Reanimated.View
-            onLayout={({ nativeEvent }) => {
-              headerHeight.value = nativeEvent.layout.height;
-            }}
-          >
-            {HeaderComponent ? (
-              <HeaderComponent
-                headerHeight={headerHeight}
-                transformationY={transformationY}
-              />
-            ) : null}
-          </Reanimated.View>
-          <NavigationContent>
-            <GestureWrapper>
-              <ReanimatedTabView
-                navigationState={navigationState}
-                navigate={navigate}
-                renderScene={renderScene}
-                renderTabBar={TabBarComponent}
-              />
-            </GestureWrapper>
-          </NavigationContent>
-        </>
+        <NavigationContent>
+          {TopComponent ? (
+            <TopComponent transformationY={transformationY} />
+          ) : null}
+          <GestureWrapper>
+            <Reanimated.View
+              onLayout={({ nativeEvent }) => {
+                headerHeight.value = nativeEvent.layout.height;
+              }}
+            >
+              {HeaderComponent ? (
+                <HeaderComponent
+                  headerHeight={headerHeight}
+                  transformationY={transformationY}
+                />
+              ) : null}
+            </Reanimated.View>
+            <ReanimatedTabView
+              navigationState={navigationState}
+              navigate={navigate}
+              renderScene={renderScene}
+              renderTabBar={TabBarComponent}
+              screenOptions={screenOptions}
+            />
+          </GestureWrapper>
+        </NavigationContent>
       )}
     </Provider>
   );

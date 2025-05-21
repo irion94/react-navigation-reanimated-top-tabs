@@ -1,11 +1,12 @@
 import React from 'react';
 import type { SharedValue } from 'react-native-reanimated';
+import type { ReanimatedTopTabNavigation } from 'react-navigation-reanimated-top-tabs';
 
 export namespace ReanimatedTabViewTypes {
   export interface Route {
     key: string;
     name: string;
-    tabBarLabel?: () => React.ReactNode;
+    tabBarLabel?: (focused: boolean) => React.ReactNode;
     title?: string;
   }
 
@@ -15,6 +16,7 @@ export namespace ReanimatedTabViewTypes {
     navigationState: NavigationState;
     position: SharedValue<number>;
     navigate(index: number): void;
+    screenOptions?: ReanimatedTopTabNavigation.NavigationOptions;
   }
 
   export interface SceneProps {

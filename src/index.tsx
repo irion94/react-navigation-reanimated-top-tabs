@@ -1,4 +1,5 @@
 import { ScrollView } from './components/wrappers/ScrollView';
+import { SectionList } from './components/wrappers/SectionList';
 import { ScreenWrapper } from './components/wrappers/ScreenWrapper';
 import { TabBarBaseComponent } from './components/elements/TabBarBaseComponent';
 import { TabBarLabelBaseComponent } from './components/elements/TabBarLabelBaseComponent';
@@ -33,6 +34,7 @@ export const TabHooks = {
 
 export const Tab = {
   ScrollView,
+  SectionList,
   ScreenWrapper,
   TabBarBaseComponent,
   TabBarLabelBaseComponent,

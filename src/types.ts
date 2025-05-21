@@ -1,7 +1,12 @@
 import { TabBarBaseComponent } from './components/elements/TabBarBaseComponent';
 import * as React from 'react';
 import { type ReactNode } from 'react';
-import { type LayoutRectangle } from 'react-native';
+import {
+  SectionList,
+  type LayoutRectangle,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { type NativeGesture } from 'react-native-gesture-handler';
 import Reanimated, { type SharedValue } from 'react-native-reanimated';
 import { type StackNavigationOptions } from '@react-navigation/stack';
@@ -29,11 +34,16 @@ export namespace ReanimatedTopTabNavigation {
             nativeGesture: NativeGesture;
             outerLayout: SharedValue<LayoutRectangle>;
             scrollY: SharedValue<number>;
-            scrollRef: { current: Reanimated.ScrollView | null };
+            scrollRef: { current: Reanimated.ScrollView | SectionList | null };
           }
         >;
-        setRef(key: string, ref: Reanimated.ScrollView | null): void;
-        getRef(key: string): { current: Reanimated.ScrollView | null };
+        setRef(
+          key: string,
+          ref: Reanimated.ScrollView | SectionList | null
+        ): void;
+        getRef(key: string): {
+          current: Reanimated.ScrollView | SectionList | null;
+        };
       };
       route: {
         map: Record<number, string>;
@@ -46,6 +56,7 @@ export namespace ReanimatedTopTabNavigation {
     HeaderComponent?: React.ComponentType<
       Pick<ContextType, 'transformationY' | 'headerHeight'>
     >;
+    TopComponent?: React.ComponentType<Pick<ContextType, 'transformationY'>>;
     TabBarComponent?: typeof TabBarBaseComponent;
     children: ReactNode;
     config?: string[];
@@ -64,5 +75,8 @@ export namespace ReanimatedTopTabNavigation {
       title: string;
     }) => React.ReactNode;
     title?: string;
+    tabBarIndicatorStyle?: StyleProp<ViewStyle>;
+    tabBarItemStyle?: StyleProp<ViewStyle>;
+    tabBarStyle?: StyleProp<ViewStyle>;
   }
 }
