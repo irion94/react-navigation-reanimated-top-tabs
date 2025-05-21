@@ -15,6 +15,7 @@ import type {
 import { Gesture } from 'react-native-gesture-handler';
 import { assign, throttle } from 'lodash';
 import { ContextHelpers } from './Context.helpers';
+import { SectionList } from 'react-native';
 
 /**
  * Hook to reset the scroll offset for the approaching screen in a tab navigation context.
@@ -46,11 +47,18 @@ const useResetApproachingScreenScrollOffset = ({
     shouldReset: boolean
   ) => {
     if (shouldReset) {
-      const { scrollTo } = context.screen.getRef(
+      const ref = context.screen.getRef(
         context.route.getKeyForIndex(index)
-      ).current ?? { scrollTo: () => {} };
-      //NOTE: use reanimated scrollTo does not work
-      scrollTo({ y: 0, animated: false });
+      ).current;
+
+      if (ref instanceof SectionList) {
+        ref.scrollToLocation({
+          animated: false,
+          sectionIndex: 0,
+          itemIndex: 0,
+          viewOffset: 0,
+        });
+      } else ref?.scrollTo({ y: 0, animated: false });
     }
   };
 
@@ -145,7 +153,7 @@ const usePrepareScreen = ({
     )
   );
 
-  const setRef = (key: string, ref: Reanimated.ScrollView) => {
+  const setRef = (key: string, ref: Reanimated.ScrollView | SectionList) => {
     const newProperties = assign({}, screenProperties.current[key], {
       scrollRef: { current: ref },
     });

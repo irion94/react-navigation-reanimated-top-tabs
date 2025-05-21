@@ -1,13 +1,16 @@
 import * as React from 'react';
-import { Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { StyleSheet, useWindowDimensions } from 'react-native';
 import Reanimated, {
-  type AnimatedStyle,
   interpolate,
   useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  type AnimatedStyle,
 } from 'react-native-reanimated';
 
 import { useTabContext } from '../../hooks/useTabContext';
 import { type ReanimatedTabViewTypes } from '../ReanimatedTopTab/types';
+import { TabBarBaseItem } from './TabBarBaseItem';
 
 export interface TabBarProps extends ReanimatedTabViewTypes.RenderTabsParams {
   children?: React.ReactNode;
@@ -20,10 +23,35 @@ export const TabBarBaseComponent = ({
   position,
   style,
   navigate,
+  screenOptions,
 }: TabBarProps) => {
   const layout = useWindowDimensions();
-
   const { topTabHeight, transformationX } = useTabContext();
+  const width = useSharedValue(0);
+
+  const { tabBarIndicatorStyle, tabBarItemStyle, tabBarStyle } =
+    screenOptions ?? {};
+
+  const inputRange = navigationState.routes.map((_, index) => index);
+
+  const indicatorStyle = useAnimatedStyle(() => {
+    const outputRange = navigationState.routes.map(
+      (_, index) => index * (width.value / navigationState.routes.length)
+    );
+
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            transformationX.value,
+            inputRange,
+            outputRange
+          ),
+        },
+      ],
+      width: width.value / navigationState.routes.length,
+    };
+  });
 
   //Assign interpolated offsetX to transformationX
   useAnimatedReaction(
@@ -46,21 +74,27 @@ export const TabBarBaseComponent = ({
         topTabHeight.value = nativeEvent.layout.height;
       }}
     >
-      <Reanimated.View style={[styles.wrapper, style]}>
+      <Reanimated.View
+        onLayout={({ nativeEvent }) => {
+          width.value = nativeEvent.layout.width;
+        }}
+        style={[styles.wrapper, tabBarStyle, style]}
+      >
+        <Reanimated.View
+          style={[styles.indicator, indicatorStyle, tabBarIndicatorStyle]}
+        />
         {navigationState.routes.map((route, index) => (
-          <Pressable
-            style={styles.labelWrapper}
+          <TabBarBaseItem
+            index={index}
+            inputRange={inputRange}
+            position={transformationX}
             key={route.key}
             onPress={() => {
               navigate(index);
             }}
-          >
-            {route.tabBarLabel ? (
-              route.tabBarLabel()
-            ) : (
-              <Text style={styles.label}>{route.title}</Text>
-            )}
-          </Pressable>
+            route={route}
+            style={tabBarItemStyle}
+          />
         ))}
       </Reanimated.View>
       {children}
@@ -75,14 +109,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: {
-    color: 'red',
-  },
   wrapper: {
-    width: '100%',
     flexDirection: 'row',
     backgroundColor: 'white',
-    paddingVertical: 8,
-    height: 50,
+  },
+  indicator: {
+    backgroundColor: 'black',
+    bottom: 0,
+    height: 2,
+    position: 'absolute',
   },
 });

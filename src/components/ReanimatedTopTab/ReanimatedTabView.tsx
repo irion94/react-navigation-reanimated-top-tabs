@@ -15,6 +15,7 @@ import Reanimated, {
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
+import type { ReanimatedTopTabNavigation } from 'react-navigation-reanimated-top-tabs';
 import { AnimationHelper } from './AnimationHelper';
 import type { ReanimatedTabViewTypes } from './types';
 
@@ -29,6 +30,7 @@ export interface ReanimatedTabViewProps {
     params: ReanimatedTabViewTypes.RenderTabsParams
   ) => React.ReactNode;
   navigate(index: number): void;
+  screenOptions?: ReanimatedTopTabNavigation.NavigationOptions;
 }
 
 export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
@@ -41,6 +43,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     renderScene,
     renderTabBar,
     navigate,
+    screenOptions,
   }) => {
     const { width } = useWindowDimensions();
     const loadedScreens = useRef([
@@ -178,6 +181,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
                 navigationState,
                 position,
                 navigate: _navigate,
+                screenOptions,
               })
             : null}
           <GestureDetector gesture={panGesture}>
