@@ -18,7 +18,6 @@ export namespace ReanimatedTabViewTypes {
   }
 
   export interface SceneProps {
-    jumpTo?: (key: string) => void;
     route: Route;
   }
 }

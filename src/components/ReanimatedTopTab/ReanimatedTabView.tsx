@@ -9,7 +9,6 @@ import Reanimated, {
   interpolate,
   LinearTransition,
   runOnJS,
-  runOnUI,
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
@@ -47,8 +46,13 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     const loadedScreens = useRef([
       navigationState.routes[navigationState.index],
     ]);
+    const navigationStateRef = useSharedValue(navigationState);
     const scrollPosition = useSharedValue(navigationState.index);
     const { positionX } = useTabContext();
+
+    useEffect(() => {
+      navigationStateRef.value = navigationState;
+    }, [navigationState]);
 
     useAnimatedReaction(
       () => scrollPosition.value,
@@ -63,23 +67,15 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     );
 
     const _navigate = (index: number) => {
-      scrollPosition.value = AnimationHelper.animation(-index * width);
-      navigate(index);
+      scrollPosition.value = AnimationHelper.animation(-index * width, () =>
+        navigate(index)
+      );
     };
 
     const minimumValueToChangeView = useMemo(
       () => width * percentageTrigger,
       [percentageTrigger, width]
     );
-
-    const _navigationState = useSharedValue({ size: 0, index: 0 });
-
-    useEffect(() => {
-      runOnUI(() => {
-        _navigationState.value.size = navigationState.routes.length;
-        _navigationState.value.index = navigationState.index;
-      })();
-    }, [navigationState]);
 
     const panGesture = React.useMemo(
       () =>
@@ -92,7 +88,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
               event,
               scrollPosition.value,
               width,
-              _navigationState.value
+              navigationStateRef.value
             );
           })
           .onEnd((event) => {
@@ -101,11 +97,9 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
               event,
               minimumValueToChangeView,
               width,
-              _navigationState.value
+              navigationStateRef.value
             );
-            scrollPosition.value = AnimationHelper.animation(state.value);
-            _navigationState.value.index = state.index;
-            runOnJS(navigate)(state.index);
+            runOnJS(_navigate)(state.index);
           }),
       [minimumValueToChangeView, width]
     );
@@ -123,19 +117,6 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
       ],
     }));
 
-    const jumpTo = React.useCallback(
-      (key: string) => {
-        const newIndex = navigationState.routes.findIndex(
-          (route) => route.key === key
-        );
-        if (newIndex === -1) {
-          return;
-        }
-        scrollPosition.value = AnimationHelper.animation(-newIndex * width);
-      },
-      [navigationState.routes, width]
-    );
-
     const chooseRender = useCallback(
       (params: ReanimatedTabViewTypes.SceneProps, useRenderScene = true) => (
         <View key={`RNNTabView_${params.route.key}`} style={{ width }}>
@@ -149,27 +130,21 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
       () =>
         navigationState.routes.map((route, index) => {
           if (!lazy) {
-            return chooseRender({ jumpTo, route });
+            return chooseRender({ route });
           }
           const screen = loadedScreens.current.find(
             (loadedScreen) => loadedScreen?.key === route.key
           );
           if (screen !== undefined) {
-            return chooseRender({ jumpTo, route });
+            return chooseRender({ route });
           }
           if (navigationState.index === index) {
             loadedScreens.current.push(route);
-            return chooseRender({ jumpTo, route });
+            return chooseRender({ route });
           }
-          return chooseRender({ jumpTo, route }, false);
+          return chooseRender({ route }, false);
         }),
-      [
-        navigationState.routes,
-        navigationState.index,
-        lazy,
-        chooseRender,
-        jumpTo,
-      ]
+      [navigationState.routes, navigationState.index, lazy, chooseRender]
     );
 
     return (
