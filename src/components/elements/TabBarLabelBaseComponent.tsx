@@ -16,12 +16,12 @@ export const TabBarLabelBaseComponent = ({
   index,
   ...props
 }: TabBarLabelTypes) => {
-  const transformationX = useTabOffset();
+  const positionX = useTabOffset();
 
   const style = useAnimatedStyle(
     () => ({
       backgroundColor: interpolateColor(
-        transformationX.value,
+        positionX.value,
         [index - 1, index, index + 1],
         ['transparent', 'blue', 'transparent']
       ),
@@ -32,7 +32,7 @@ export const TabBarLabelBaseComponent = ({
   const textStyle = useAnimatedStyle(
     () => ({
       color: interpolateColor(
-        transformationX.value,
+        positionX.value,
         [index - 1, index, index + 1],
         ['black', 'white', 'black']
       ),

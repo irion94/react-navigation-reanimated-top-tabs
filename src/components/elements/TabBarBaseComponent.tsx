@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { StyleSheet, useWindowDimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Reanimated, {
   interpolate,
-  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   type AnimatedStyle,
@@ -20,13 +19,11 @@ export interface TabBarProps extends ReanimatedTabViewTypes.RenderTabsParams {
 export const TabBarBaseComponent = ({
   children,
   navigationState,
-  position,
   style,
   navigate,
   screenOptions,
 }: TabBarProps) => {
-  const layout = useWindowDimensions();
-  const { topTabHeight, transformationX } = useTabContext();
+  const { topTabHeight, positionX } = useTabContext();
   const width = useSharedValue(0);
 
   const { tabBarIndicatorStyle, tabBarItemStyle, tabBarStyle } =
@@ -42,31 +39,12 @@ export const TabBarBaseComponent = ({
     return {
       transform: [
         {
-          translateX: interpolate(
-            transformationX.value,
-            inputRange,
-            outputRange
-          ),
+          translateX: interpolate(positionX.value, inputRange, outputRange),
         },
       ],
       width: width.value / navigationState.routes.length,
     };
   });
-
-  //Assign interpolated offsetX to transformationX
-  useAnimatedReaction(
-    () =>
-      interpolate(
-        position.value,
-        navigationState.routes.map((_, i) => i * layout.width),
-        navigationState.routes.map((_, i) => i),
-        'clamp'
-      ),
-    (value) => {
-      transformationX.value = value;
-    },
-    [navigationState.routes]
-  );
 
   return (
     <Reanimated.View
@@ -87,7 +65,6 @@ export const TabBarBaseComponent = ({
           <TabBarBaseItem
             index={index}
             inputRange={inputRange}
-            position={transformationX}
             key={route.key}
             onPress={() => {
               navigate(index);

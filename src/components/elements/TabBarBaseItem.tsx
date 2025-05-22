@@ -6,14 +6,13 @@ import {
   type ViewStyle,
 } from 'react-native';
 import Animated, {
-  type SharedValue,
-  useAnimatedStyle,
   interpolate,
+  useAnimatedStyle,
 } from 'react-native-reanimated';
+import { useTabContext } from '../../hooks/useTabContext';
 import { type ReanimatedTabViewTypes } from '../ReanimatedTopTab/types';
 
 interface TabBarBaseItemProps {
-  position: SharedValue<number>;
   index: number;
   inputRange: Array<number>;
   onPress: (index: number) => void;
@@ -22,16 +21,17 @@ interface TabBarBaseItemProps {
 }
 
 export const TabBarBaseItem = ({
-  position,
   index,
   inputRange,
   onPress,
   route,
   style,
 }: TabBarBaseItemProps) => {
+  const { positionX } = useTabContext();
+
   const activeStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
-      position.value,
+      positionX.value,
       inputRange,
       inputRange.map((i) => (i === index ? 1 : 0))
     ),
@@ -40,7 +40,7 @@ export const TabBarBaseItem = ({
 
   const inactiveStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
-      position.value,
+      positionX.value,
       inputRange,
       inputRange.map((i) => (i === index ? 0 : 1))
     ),
