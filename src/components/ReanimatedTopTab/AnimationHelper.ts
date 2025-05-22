@@ -75,7 +75,7 @@ const onEnd = (
   };
 };
 
-const animation = (newValue: number, duration = 350) => {
+const animation = (newValue: number, duration = 200) => {
   'worklet';
   return withTiming(newValue, { duration });
 };

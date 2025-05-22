@@ -133,7 +133,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
         }
         scrollPosition.value = AnimationHelper.animation(-newIndex * width);
       },
-      [navigationState.routes, scrollPosition, width]
+      [navigationState.routes, width]
     );
 
     const chooseRender = useCallback(
