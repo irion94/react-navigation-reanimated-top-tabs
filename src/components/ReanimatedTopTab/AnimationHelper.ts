@@ -4,9 +4,8 @@ import type {
   PanGestureChangeEventPayload,
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
-import { withTiming } from 'react-native-reanimated';
-
-type NavigationState = { size: number; index: number };
+import { runOnJS, withTiming } from 'react-native-reanimated';
+import type { ReanimatedTabViewTypes } from './types';
 
 const onChange = (
   event: GestureUpdateEvent<
@@ -14,13 +13,13 @@ const onChange = (
   >,
   animationValue: number,
   width: number,
-  navigationState: NavigationState
+  navigationState: ReanimatedTabViewTypes.NavigationState
 ) => {
   'worklet';
   if (animationValue > 0) {
     return 0;
   }
-  const routesLength = navigationState.size - 1;
+  const routesLength = navigationState.routes.length - 1;
   if (animationValue < -width * routesLength) {
     return -width * routesLength;
   }
@@ -28,11 +27,11 @@ const onChange = (
 };
 
 const getIndex = (
-  navigationState: NavigationState,
+  navigationState: ReanimatedTabViewTypes.NavigationState,
   type: 'increment' | 'decrement'
 ) => {
   'worklet';
-  const max = navigationState.size - 1;
+  const max = navigationState.routes.length - 1;
   const current = navigationState.index;
 
   if (type === 'increment' && current < max) {
@@ -50,7 +49,7 @@ const onEnd = (
   event: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
   minimumValueToChangeView: number,
   width: number,
-  navigationState: NavigationState
+  navigationState: ReanimatedTabViewTypes.NavigationState
 ) => {
   'worklet';
   const { velocityX, translationX } = event;
@@ -75,9 +74,11 @@ const onEnd = (
   };
 };
 
-const animation = (newValue: number, duration = 200) => {
+const animation = (newValue: number, onFinished?: () => void) => {
   'worklet';
-  return withTiming(newValue, { duration });
+  return withTiming(newValue, { duration: 350 }, (finished) => {
+    if (finished && onFinished) runOnJS(onFinished)();
+  });
 };
 
 export const AnimationHelper = {
