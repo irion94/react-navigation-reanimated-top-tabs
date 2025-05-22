@@ -26,6 +26,7 @@ const TabViewNavigator = ({
   config,
   initialRouteName,
   screenOptions = {},
+  bounces,
 }: ReanimatedTopTabNavigation.TabViewNavigatorProps) => {
   const { NavigationContent, descriptors, navigation, state } =
     useNavigationBuilder<
@@ -94,7 +95,7 @@ const TabViewNavigator = ({
           {TopComponent ? (
             <TopComponent transformationY={transformationY} />
           ) : null}
-          <GestureWrapper>
+          <GestureWrapper bounces={bounces}>
             <Reanimated.View
               onLayout={({ nativeEvent }) => {
                 headerHeight.value = nativeEvent.layout.height;

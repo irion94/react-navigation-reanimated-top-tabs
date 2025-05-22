@@ -32,14 +32,18 @@ const getIndex = (
   type: 'increment' | 'decrement'
 ) => {
   'worklet';
-  if (type === 'increment') {
-    return navigationState.index === navigationState.size - 1
-      ? navigationState.index
-      : navigationState.index + 1;
+  const max = navigationState.size - 1;
+  const current = navigationState.index;
+
+  if (type === 'increment' && current < max) {
+    return current + 1;
   }
-  return navigationState.index === 0
-    ? navigationState.index
-    : navigationState.index - 1;
+
+  if (type === 'decrement' && current > 0) {
+    return current - 1;
+  }
+
+  return current;
 };
 
 const onEnd = (
@@ -49,33 +53,21 @@ const onEnd = (
   navigationState: NavigationState
 ) => {
   'worklet';
-  if (event.velocityX < -200) {
+  const { velocityX, translationX } = event;
+
+  if (velocityX < -200 || translationX < -minimumValueToChangeView) {
+    const newIndex = getIndex(navigationState, 'increment');
     return {
-      index: getIndex(navigationState, 'increment'),
-      value: -width * (navigationState.index + 1),
+      index: newIndex,
+      value: -width * newIndex,
     };
   }
-  if (event.velocityX > 200) {
+  if (velocityX > 200 || translationX > minimumValueToChangeView) {
+    const newIndex = getIndex(navigationState, 'decrement');
     return {
-      index: getIndex(navigationState, 'decrement'),
-      value: -width * (navigationState.index - 1),
+      index: newIndex,
+      value: -width * newIndex,
     };
-  }
-  if (event.translationX < 0) {
-    if (event.translationX < -minimumValueToChangeView) {
-      return {
-        index: getIndex(navigationState, 'increment'),
-        value: -width * (navigationState.index + 1),
-      };
-    }
-  }
-  if (event.translationX > 0) {
-    if (event.translationX > minimumValueToChangeView) {
-      return {
-        index: getIndex(navigationState, 'decrement'),
-        value: -width * (navigationState.index - 1),
-      };
-    }
   }
   return {
     index: navigationState.index,

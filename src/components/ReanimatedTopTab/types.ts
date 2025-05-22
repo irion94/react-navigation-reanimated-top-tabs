@@ -1,5 +1,4 @@
 import React from 'react';
-import type { SharedValue } from 'react-native-reanimated';
 import type { ReanimatedTopTabNavigation } from 'react-navigation-reanimated-top-tabs';
 
 export namespace ReanimatedTabViewTypes {
@@ -14,7 +13,6 @@ export namespace ReanimatedTabViewTypes {
 
   export interface RenderTabsParams {
     navigationState: NavigationState;
-    position: SharedValue<number>;
     navigate(index: number): void;
     screenOptions?: ReanimatedTopTabNavigation.NavigationOptions;
   }
@@ -23,6 +21,4 @@ export namespace ReanimatedTabViewTypes {
     jumpTo?: (key: string) => void;
     route: Route;
   }
-
-  export type PositionInterpolation = { input: number[]; output: number[] };
 }

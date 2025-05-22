@@ -3,6 +3,6 @@ import { useTabContext } from './useTabContext';
 import { useDerivedValue } from 'react-native-reanimated';
 
 export const useTabOffset = () => {
-  const { transformationX } = useTabContext();
-  return useDerivedValue(() => transformationX.value);
+  const { positionX } = useTabContext();
+  return useDerivedValue(() => positionX.value);
 };

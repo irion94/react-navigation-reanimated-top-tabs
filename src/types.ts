@@ -23,8 +23,9 @@ export namespace ReanimatedTopTabNavigation {
     navHeight: SharedValue<number>;
     topTabHeight: SharedValue<number>;
     topTabNativeGesture: NativeGesture;
-    transformationX: SharedValue<number>;
+    positionX: SharedValue<number>;
     transformationY: SharedValue<number>;
+    scrollY: SharedValue<number>;
     context: {
       screen: {
         properties: Record<
@@ -62,6 +63,7 @@ export namespace ReanimatedTopTabNavigation {
     config?: string[];
     initialRouteName?: string;
     screenOptions?: StackNavigationOptions;
+    bounces?: boolean;
   }
 
   export type TopTabContextProps = Pick<ContextType, 'config' | 'context'> & {

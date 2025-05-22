@@ -2,7 +2,6 @@ import React, { useMemo, useRef, useState } from 'react';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, {
   Easing,
-  interpolate,
   runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -12,13 +11,19 @@ import Reanimated, {
 } from 'react-native-reanimated';
 
 import { useTabContext } from '../../hooks/useTabContext';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 interface GestureWrapperProps {
   children: React.ReactNode;
+  bounces?: boolean;
 }
 
-export const GestureWrapper = ({ children }: GestureWrapperProps) => {
+export const GestureWrapper = ({ children, bounces }: GestureWrapperProps) => {
+  const _bounces = Platform.select({
+    ios: bounces,
+    default: false,
+  });
+
   const {
     context,
     currentScreenIndex,
@@ -26,6 +31,7 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
     gestureEnabled,
     headerHeight,
     transformationY,
+    scrollY,
   } = useTabContext();
 
   const movedY = useSharedValue(0);
@@ -106,22 +112,33 @@ export const GestureWrapper = ({ children }: GestureWrapperProps) => {
     [_gestureEnabled]
   );
 
-  const style = useAnimatedStyle(
-    () => ({
+  useAnimatedReaction(
+    () => {
+      if (transformationY.value > 0) {
+        if (_bounces) return transformationY.value * -0.3;
+        else return 0;
+      }
+      if (transformationY.value < -headerHeight.value) {
+        return headerHeight.value;
+      }
+
+      return -transformationY.value;
+    },
+    (value) => {
+      scrollY.value = value;
+    }
+  );
+
+  const style = useAnimatedStyle(() => {
+    return {
       flex: 1,
       transform: [
         {
-          translateY: interpolate(
-            transformationY.value,
-            [0, -headerHeight.value],
-            [0, -headerHeight.value],
-            'clamp'
-          ),
+          translateY: scrollY.value * -1,
         },
       ],
-    }),
-    []
-  );
+    };
+  }, []);
 
   return (
     <GestureDetector gesture={gesture}>

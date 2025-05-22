@@ -22,7 +22,7 @@ import { SectionList } from 'react-native';
  *
  * @param {Object} params - The parameters for configuring the scroll offset reset.
  * @param {ReanimatedTopTabNavigation.ContextType["context"]} params.context - The context containing navigation and screen information.
- * @param {ReanimatedTopTabNavigation.ContextType["transformationX"]} params.transformationX - The horizontal transformation value used in animations.
+ * @param {ReanimatedTopTabNavigation.ContextType["positionX"]} params.positionX - The horizontal transformation value used in animations.
  * @param {ReanimatedTopTabNavigation.ContextType["currentYPosition"]} params.currentYPosition - The current vertical scroll position.
  *
  * The hook is responsible for resetting the vertical scroll offset of the "approaching" screen within a tabbed navigation interface,
@@ -32,11 +32,11 @@ import { SectionList } from 'react-native';
  */
 const useResetApproachingScreenScrollOffset = ({
   context,
-  transformationX,
+  positionX,
   currentYPosition,
 }: Pick<
   ReanimatedTopTabNavigation.ContextType,
-  'context' | 'currentYPosition' | 'transformationX'
+  'context' | 'currentYPosition' | 'positionX'
 >) => {
   const screenOffsets = useDerivedValue(() =>
     Object.values(context.screen.properties).map(({ scrollY }) => scrollY.value)
@@ -63,7 +63,7 @@ const useResetApproachingScreenScrollOffset = ({
   };
 
   useAnimatedReaction(
-    () => transformationX.value,
+    () => positionX.value,
     (current, previous) => {
       const approachingIndex = ContextHelpers.getTargetIndex(current, previous);
 
@@ -205,7 +205,7 @@ const usePrepareContext = ({
  * @param {Array} params.config - An array of configuration settings to determine the header's transformation.
  * @returns {Object} An object containing shared values for header transformations and positioning:
  * - transformationY: The derived Y-axis transformation value for the header.
- * - transformationX: The shared X-axis transformation value to be observed.
+ * - positionX: The shared X-axis transformation value to be observed.
  * - currentYPosition: The shared Y-axis position of the header.
  * - headerHeight: The shared height value of the header.
  */
@@ -215,7 +215,8 @@ const useTransformHeaderOnTabChange = ({
   const headerHeight = useSharedValue(0);
   const isHeaderHeightSet = useSharedValue(false);
   const transformationY = useSharedValue(0);
-  const transformationX = useSharedValue(0);
+  const scrollY = useSharedValue(0);
+  const positionX = useSharedValue(0);
   const currentYPosition = useSharedValue(0);
 
   //Hide header base on config
@@ -263,7 +264,7 @@ const useTransformHeaderOnTabChange = ({
   );
 
   useAnimatedReaction(
-    () => transformationX.value,
+    () => positionX.value,
     (value) => {
       if (currentYPosition.value === -headerHeight.value) return;
       transformationY.value = interpolate(
@@ -277,21 +278,22 @@ const useTransformHeaderOnTabChange = ({
 
   return {
     transformationY,
-    transformationX,
+    positionX,
     currentYPosition,
     headerHeight,
     isHeaderHeightSet,
+    scrollY,
   };
 };
 
 const useApproachingTabChange = ({
   config,
-  transformationX,
+  positionX,
   gestureEnabled,
   currentScreenIndex,
 }: Pick<
   ReanimatedTopTabNavigation.ContextType,
-  'config' | 'transformationX' | 'currentScreenIndex' | 'gestureEnabled'
+  'config' | 'positionX' | 'currentScreenIndex' | 'gestureEnabled'
 >) => {
   const onIndexApproach = (index: number) => {
     'worklet';
@@ -309,7 +311,7 @@ const useApproachingTabChange = ({
   };
 
   useAnimatedReaction(
-    () => transformationX.value,
+    () => positionX.value,
     (current, previous) => {
       const approachingIndex = ContextHelpers.getTargetIndex(current, previous);
       onIndexApproach(approachingIndex);

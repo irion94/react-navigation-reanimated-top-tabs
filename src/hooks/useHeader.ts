@@ -2,10 +2,10 @@ import { useTabContext } from './useTabContext';
 import { withTiming } from 'react-native-reanimated';
 
 export const useHeader = () => {
-  const { headerHeight, transformationX } = useTabContext();
+  const { headerHeight, transformationY } = useTabContext();
 
   const hideHeader = () => {
-    transformationX.value = withTiming(-headerHeight.value);
+    transformationY.value = withTiming(-headerHeight.value);
   };
 
   return { hideHeader };

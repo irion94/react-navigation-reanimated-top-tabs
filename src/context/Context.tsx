@@ -24,23 +24,24 @@ export const Provider = memo(
     const topTabNativeGesture = useRef(Gesture.Native()).current;
 
     const {
-      transformationX,
+      positionX,
       transformationY,
       currentYPosition,
       headerHeight,
       isHeaderHeightSet,
+      scrollY,
     } = ContextHooks.useTransformHeaderOnTabChange({ config });
 
     ContextHooks.useResetApproachingScreenScrollOffset({
       currentYPosition,
-      transformationX,
+      positionX,
       context,
     });
 
     ContextHooks.useApproachingTabChange({
       config,
       gestureEnabled,
-      transformationX,
+      positionX,
       currentScreenIndex,
     });
 
@@ -56,10 +57,11 @@ export const Provider = memo(
           navHeight,
           topTabHeight,
           topTabNativeGesture,
-          transformationX,
+          positionX,
           transformationY,
           context,
           isHeaderHeightSet,
+          scrollY,
         }}
       >
         {children({
@@ -72,10 +74,11 @@ export const Provider = memo(
           navHeight,
           topTabHeight,
           topTabNativeGesture,
-          transformationX,
+          positionX,
           transformationY,
           context,
           isHeaderHeightSet,
+          scrollY,
         })}
       </Context.Provider>
     );

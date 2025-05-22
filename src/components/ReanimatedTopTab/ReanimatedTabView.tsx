@@ -6,16 +6,16 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 import Reanimated, {
-  Extrapolation,
   interpolate,
   LinearTransition,
   runOnJS,
   runOnUI,
+  useAnimatedReaction,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
 import type { ReanimatedTopTabNavigation } from 'react-navigation-reanimated-top-tabs';
+import { useTabContext } from '../../hooks/useTabContext';
 import { AnimationHelper } from './AnimationHelper';
 import type { ReanimatedTabViewTypes } from './types';
 
@@ -24,7 +24,6 @@ export interface ReanimatedTabViewProps {
   lazy?: boolean;
   navigationState: ReanimatedTabViewTypes.NavigationState;
   percentageTrigger?: number;
-  positionInterpolation?: ReanimatedTabViewTypes.PositionInterpolation;
   renderScene: (params: ReanimatedTabViewTypes.SceneProps) => React.ReactNode;
   renderTabBar?: (
     params: ReanimatedTabViewTypes.RenderTabsParams
@@ -39,7 +38,6 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     lazy = false,
     navigationState,
     percentageTrigger = 0.4,
-    positionInterpolation,
     renderScene,
     renderTabBar,
     navigate,
@@ -50,18 +48,19 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
       navigationState.routes[navigationState.index],
     ]);
     const scrollPosition = useSharedValue(navigationState.index);
+    const { positionX } = useTabContext();
 
-    const position = useDerivedValue(() => {
-      if (!positionInterpolation) {
-        return -scrollPosition.value;
+    useAnimatedReaction(
+      () => scrollPosition.value,
+      (value) => {
+        positionX.value = interpolate(
+          value,
+          navigationState.routes.map((_, i) => i * -width),
+          navigationState.routes.map((_, i) => i),
+          'clamp'
+        );
       }
-      return interpolate(
-        -scrollPosition.value,
-        positionInterpolation.input,
-        positionInterpolation.output,
-        Extrapolation.CLAMP
-      );
-    }, [positionInterpolation]);
+    );
 
     const _navigate = (index: number) => {
       scrollPosition.value = AnimationHelper.animation(-index * width);
@@ -108,7 +107,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
             _navigationState.value.index = state.index;
             runOnJS(navigate)(state.index);
           }),
-      [minimumValueToChangeView, width, _navigationState]
+      [minimumValueToChangeView, width]
     );
 
     const scrollPositionStyle = useAnimatedStyle(() => ({
@@ -118,7 +117,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
             scrollPosition.value,
             [-width * (navigationState.routes.length - 1), 0],
             [-width * (navigationState.routes.length - 1), 0],
-            Extrapolation.CLAMP
+            'clamp'
           ),
         },
       ],
@@ -179,7 +178,6 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
           {renderTabBar
             ? renderTabBar({
                 navigationState,
-                position,
                 navigate: _navigate,
                 screenOptions,
               })
