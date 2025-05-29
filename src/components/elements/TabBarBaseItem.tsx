@@ -1,7 +1,6 @@
 import {
   Pressable,
   StyleSheet,
-  Text,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
@@ -11,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTabContext } from '../../hooks/useTabContext';
 import { type ReanimatedTabViewTypes } from '../ReanimatedTopTab/types';
+import { TabBarLabelBaseComponent } from './TabBarLabelBaseComponent';
 
 interface TabBarBaseItemProps {
   index: number;
@@ -52,14 +52,14 @@ export const TabBarBaseItem = ({
         {route.tabBarLabel ? (
           route.tabBarLabel(true)
         ) : (
-          <Text>{route.title}</Text>
+          <TabBarLabelBaseComponent title={route.title ?? ''} focused={true} />
         )}
       </Animated.View>
       <Animated.View style={inactiveStyle}>
         {route.tabBarLabel ? (
           route.tabBarLabel(false)
         ) : (
-          <Text>{route.title}</Text>
+          <TabBarLabelBaseComponent title={route.title ?? ''} focused={false} />
         )}
       </Animated.View>
     </Pressable>
