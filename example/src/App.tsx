@@ -97,9 +97,6 @@ const Test = () => {
   return (
     <Stack.Navigator
       config={['normal', 'normal', 'minimalized']}
-      screenOptions={{
-        tabBarLabel: Tab.TabBarLabelBaseComponent,
-      }}
       HeaderComponent={HeaderComponent}
     >
       <Stack.Screen name={'blue'} component={DumpScreen} />

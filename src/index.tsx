@@ -1,19 +1,18 @@
+import { useEffect } from 'react';
+import { TabBarBaseComponent } from './components/elements/TabBarBaseComponent';
+import { ScreenWrapper } from './components/wrappers/ScreenWrapper';
 import { ScrollView } from './components/wrappers/ScrollView';
 import { SectionList } from './components/wrappers/SectionList';
-import { ScreenWrapper } from './components/wrappers/ScreenWrapper';
-import { TabBarBaseComponent } from './components/elements/TabBarBaseComponent';
-import { TabBarLabelBaseComponent } from './components/elements/TabBarLabelBaseComponent';
-import { useEffect } from 'react';
-import { WarningService } from './services/Warning.service';
+import { useHeader } from './hooks/useHeader';
+import { useScreenGesture } from './hooks/useScreenGesture';
+import { useScreenProperties } from './hooks/useScreenProperties';
+import { useScreenScrollable } from './hooks/useScreenScrollable';
 import { useTabContext } from './hooks/useTabContext';
 import { useTabOffset } from './hooks/useTabOffset';
-import { useScreenGesture } from './hooks/useScreenGesture';
-import { useScreenScrollable } from './hooks/useScreenScrollable';
-import { useScreenProperties } from './hooks/useScreenProperties';
-import { useHeader } from './hooks/useHeader';
+import { WarningService } from './services/Warning.service';
 
-export { type ReanimatedTopTabNavigation } from './types';
 export { createReanimatedTopTabNavigator } from './navigator/createReanimatedTopTabNavigator';
+export { type ReanimatedTopTabNavigation } from './types';
 
 const _useTabContext = () => {
   useEffect(() => {
@@ -37,5 +36,4 @@ export const Tab = {
   SectionList,
   ScreenWrapper,
   TabBarBaseComponent,
-  TabBarLabelBaseComponent,
 };

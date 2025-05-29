@@ -59,8 +59,8 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
       (value) => {
         positionX.value = interpolate(
           value,
-          navigationState.routes.map((_, i) => i * -width),
-          navigationState.routes.map((_, i) => i),
+          navigationState.routes.map((_, i) => i * -width).reverse(),
+          navigationState.routes.map((_, i) => i).reverse(),
           'clamp'
         );
       }
