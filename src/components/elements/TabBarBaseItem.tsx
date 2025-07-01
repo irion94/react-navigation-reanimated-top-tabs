@@ -18,6 +18,7 @@ interface TabBarBaseItemProps {
   onPress: (index: number) => void;
   route: ReanimatedTabViewTypes.Route;
   style?: StyleProp<ViewStyle>;
+  focused?: boolean;
 }
 
 export const TabBarBaseItem = ({
@@ -26,6 +27,7 @@ export const TabBarBaseItem = ({
   onPress,
   route,
   style,
+  focused,
 }: TabBarBaseItemProps) => {
   const { positionX } = useTabContext();
 
@@ -47,7 +49,13 @@ export const TabBarBaseItem = ({
   }));
 
   return (
-    <Pressable onPress={() => onPress(index)} style={[styles.container, style]}>
+    <Pressable
+      onPress={() => onPress(index)}
+      style={[styles.container, style]}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: focused }}
+      accessibilityLabel={route.tabBarAccessibilityLabel}
+    >
       <Animated.View style={activeStyle}>
         {route.tabBarLabel ? (
           route.tabBarLabel(true)

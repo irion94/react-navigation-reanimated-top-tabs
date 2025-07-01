@@ -80,5 +80,6 @@ export namespace ReanimatedTopTabNavigation {
     tabBarIndicatorStyle?: StyleProp<ViewStyle>;
     tabBarItemStyle?: StyleProp<ViewStyle>;
     tabBarStyle?: StyleProp<ViewStyle>;
+    tabBarAccessibilityLabel?: string;
   }
 }

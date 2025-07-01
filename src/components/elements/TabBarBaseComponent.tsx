@@ -57,6 +57,7 @@ export const TabBarBaseComponent = ({
           width.value = nativeEvent.layout.width;
         }}
         style={[styles.wrapper, tabBarStyle, style]}
+        accessibilityRole="tablist"
       >
         <Reanimated.View
           style={[styles.indicator, indicatorStyle, tabBarIndicatorStyle]}
@@ -71,6 +72,7 @@ export const TabBarBaseComponent = ({
             }}
             route={route}
             style={tabBarItemStyle}
+            focused={navigationState.index === index}
           />
         ))}
       </Reanimated.View>

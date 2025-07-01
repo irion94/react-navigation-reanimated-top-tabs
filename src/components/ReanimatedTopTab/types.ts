@@ -6,6 +6,7 @@ export namespace ReanimatedTabViewTypes {
     key: string;
     name: string;
     tabBarLabel?: (focused: boolean) => React.ReactNode;
+    tabBarAccessibilityLabel?: string;
     title?: string;
   }
 
