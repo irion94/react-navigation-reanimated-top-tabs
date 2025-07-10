@@ -1,12 +1,19 @@
 import {
   createNavigatorFactory,
+  type NavigationListBase,
+  type NavigatorTypeBagBase,
   type ParamListBase,
+  type StaticConfig,
   TabActions,
   type TabNavigationState,
   TabRouter,
+  type TypedNavigator,
   useNavigationBuilder,
 } from '@react-navigation/native';
-import type { DefaultRouterOptions } from '@react-navigation/routers';
+import type {
+  TabActionHelpers,
+  TabRouterOptions,
+} from '@react-navigation/routers';
 import { GestureWrapper } from '../components/wrappers/GestureWrapper';
 import { TabBarBaseComponent } from '../components/elements/TabBarBaseComponent';
 import { Provider } from '../context/Context';
@@ -31,13 +38,12 @@ const TabViewNavigator = ({
   const { NavigationContent, descriptors, navigation, state } =
     useNavigationBuilder<
       TabNavigationState<ParamListBase>,
-      DefaultRouterOptions,
-      {},
+      TabRouterOptions,
+      TabActionHelpers<ParamListBase>,
       ReanimatedTopTabNavigation.NavigationOptions,
       {}
     >(TabRouter, {
       children,
-      defaultScreenOptions: screenOptions,
       initialRouteName,
       screenOptions,
     });
@@ -52,6 +58,7 @@ const TabViewNavigator = ({
 
   const navigate = (index: number) => {
     const route = state.routes[index];
+
     if (!route) return;
     navigation.dispatch(TabActions.jumpTo(route.name));
   };
@@ -122,12 +129,19 @@ const TabViewNavigator = ({
   );
 };
 
-export const createReanimatedTopTabNavigator = <
-  Params extends ParamListBase,
->() =>
-  createNavigatorFactory<
-    TabNavigationState<Params>,
-    ReanimatedTopTabNavigation.NavigationOptions,
-    {},
-    typeof TabViewNavigator
-  >(TabViewNavigator)();
+export function createReanimatedTopTabNavigator<
+  const ParamList extends ParamListBase,
+  const NavigatorID extends string | undefined = undefined,
+  const TypeBag extends NavigatorTypeBagBase = {
+    ParamList: ParamList;
+    NavigatorID: NavigatorID;
+    State: TabNavigationState<ParamList>;
+    ScreenOptions: ReanimatedTopTabNavigation.NavigationOptions;
+    EventMap: {};
+    NavigationList: NavigationListBase<ParamListBase>;
+    Navigator: typeof TabViewNavigator;
+  },
+  const Config extends StaticConfig<TypeBag> = StaticConfig<TypeBag>,
+>(config?: Config): TypedNavigator<TypeBag, Config> {
+  return createNavigatorFactory(TabViewNavigator)(config);
+}
