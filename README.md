@@ -31,3 +31,7 @@ export default function App() {
   );
 }
 ```
+
+## Credits
+
+The pager is derived from [react-native-reanimated-tab-view](https://github.com/risck256/react-native-reanimated-tab-view) by Umberto Lanno (MIT). See [NOTICE.md](./NOTICE.md).

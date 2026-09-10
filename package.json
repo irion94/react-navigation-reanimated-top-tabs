@@ -9,6 +9,7 @@
   "files": [
     "src",
     "lib",
+    "NOTICE.md",
     "android",
     "ios",
     "cpp",

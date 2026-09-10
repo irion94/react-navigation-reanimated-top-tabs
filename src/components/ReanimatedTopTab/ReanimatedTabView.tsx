@@ -1,3 +1,6 @@
+// Derived from react-native-reanimated-tab-view v0.4.3 by Umberto Lanno
+// (MIT License, Copyright (c) 2023 Umberto Lanno).
+// See NOTICE.md at the repository root for the full license text.
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
