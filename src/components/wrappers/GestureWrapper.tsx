@@ -38,11 +38,11 @@ export const GestureWrapper = ({ children, bounces }: GestureWrapperProps) => {
 
   const gestureRef = useRef(Gesture.Pan());
 
+  const screenScrollYs = Object.values(context.screen.properties).map(
+    (screenProperties) => screenProperties.scrollY
+  );
   const currentScreenScrollOffset = useDerivedValue(
-    () =>
-      Object.values(context.screen.properties).map(({ scrollY }) => scrollY)[
-        currentScreenIndex.value
-      ]?.value ?? 0
+    () => screenScrollYs[currentScreenIndex.value]?.value ?? 0
   );
 
   const withTimingConfig = {
