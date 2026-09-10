@@ -48,7 +48,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
       index: navigationState.index,
       routesCount,
     });
-    const scrollPosition = useSharedValue(navigationState.index);
+    const scrollPosition = useSharedValue(-navigationState.index * width);
     const { positionX } = useTabContext();
 
     useEffect(() => {
@@ -167,7 +167,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
               style={[
                 scrollPositionStyle,
                 defaultStyles.flex,
-                { width: width * navigationState.routes.length - 1 },
+                { width: width * routesCount },
                 defaultStyles.viewsContainer,
               ]}
             >
