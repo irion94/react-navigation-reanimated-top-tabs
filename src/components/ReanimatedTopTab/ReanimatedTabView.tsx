@@ -1,10 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, {
   interpolate,
   runOnJS,
@@ -157,7 +153,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     );
 
     return (
-      <GestureHandlerRootView style={defaultStyles.flex}>
+      <View style={defaultStyles.flex}>
         <Reanimated.View style={defaultStyles.flex}>
           {renderTabBar
             ? renderTabBar({
@@ -179,7 +175,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
             </Reanimated.View>
           </GestureDetector>
         </Reanimated.View>
-      </GestureHandlerRootView>
+      </View>
     );
   }
 );
