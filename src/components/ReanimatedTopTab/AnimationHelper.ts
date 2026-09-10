@@ -4,7 +4,7 @@ import type {
   PanGestureChangeEventPayload,
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
-import { runOnJS, withTiming } from 'react-native-reanimated';
+import { withTiming } from 'react-native-reanimated';
 import type { ReanimatedTabViewTypes } from './types';
 
 const onChange = (
@@ -74,11 +74,9 @@ const onEnd = (
   };
 };
 
-const animation = (newValue: number, onFinished?: () => void) => {
+const animation = (newValue: number) => {
   'worklet';
-  return withTiming(newValue, { duration: 350 }, (finished) => {
-    if (finished && onFinished) runOnJS(onFinished)();
-  });
+  return withTiming(newValue, { duration: 350 });
 };
 
 export const AnimationHelper = {

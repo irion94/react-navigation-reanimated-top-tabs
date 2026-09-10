@@ -71,9 +71,8 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     );
 
     const _navigate = (index: number) => {
-      scrollPosition.value = AnimationHelper.animation(-index * width, () =>
-        navigate(index)
-      );
+      navigate(index);
+      scrollPosition.value = AnimationHelper.animation(-index * width);
     };
 
     const minimumValueToChangeView = useMemo(
