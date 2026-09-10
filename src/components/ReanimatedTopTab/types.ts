@@ -12,6 +12,9 @@ export namespace ReanimatedTabViewTypes {
 
   export type NavigationState = { index: number; routes: Route[] };
 
+  /** Primitive-only snapshot of NavigationState, safe to capture in worklets. */
+  export type PagerState = { index: number; routesCount: number };
+
   export interface RenderTabsParams {
     navigationState: NavigationState;
     navigate(index: number): void;

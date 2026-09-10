@@ -13,13 +13,13 @@ const onChange = (
   >,
   animationValue: number,
   width: number,
-  navigationState: ReanimatedTabViewTypes.NavigationState
+  pagerState: ReanimatedTabViewTypes.PagerState
 ) => {
   'worklet';
   if (animationValue > 0) {
     return 0;
   }
-  const routesLength = navigationState.routes.length - 1;
+  const routesLength = pagerState.routesCount - 1;
   if (animationValue < -width * routesLength) {
     return -width * routesLength;
   }
@@ -27,12 +27,12 @@ const onChange = (
 };
 
 const getIndex = (
-  navigationState: ReanimatedTabViewTypes.NavigationState,
+  pagerState: ReanimatedTabViewTypes.PagerState,
   type: 'increment' | 'decrement'
 ) => {
   'worklet';
-  const max = navigationState.routes.length - 1;
-  const current = navigationState.index;
+  const max = pagerState.routesCount - 1;
+  const current = pagerState.index;
 
   if (type === 'increment' && current < max) {
     return current + 1;
@@ -49,28 +49,28 @@ const onEnd = (
   event: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
   minimumValueToChangeView: number,
   width: number,
-  navigationState: ReanimatedTabViewTypes.NavigationState
+  pagerState: ReanimatedTabViewTypes.PagerState
 ) => {
   'worklet';
   const { velocityX, translationX } = event;
 
   if (velocityX < -200 || translationX < -minimumValueToChangeView) {
-    const newIndex = getIndex(navigationState, 'increment');
+    const newIndex = getIndex(pagerState, 'increment');
     return {
       index: newIndex,
       value: -width * newIndex,
     };
   }
   if (velocityX > 200 || translationX > minimumValueToChangeView) {
-    const newIndex = getIndex(navigationState, 'decrement');
+    const newIndex = getIndex(pagerState, 'decrement');
     return {
       index: newIndex,
       value: -width * newIndex,
     };
   }
   return {
-    index: navigationState.index,
-    value: -width * navigationState.index,
+    index: pagerState.index,
+    value: -width * pagerState.index,
   };
 };
 
