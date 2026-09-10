@@ -38,8 +38,9 @@ export const useScreenScrollable = () => {
       (!gestureEnabled.value || currentYPosition.value === -headerHeight.value),
   }));
 
+  const routeScrollY = context.screen.properties[key]?.scrollY;
   const onScroll = useAnimatedScrollHandler(({ contentOffset }) => {
-    const scrollPosition = context.screen.properties[key]?.scrollY;
+    const scrollPosition = routeScrollY;
     if (!scrollPosition)
       throw 'ScrollPosition property does not exist for this route';
     scrollPosition.value = contentOffset.y;
@@ -49,12 +50,9 @@ export const useScreenScrollable = () => {
     transformationY.value >= 0 ? headerHeight.value : 0
   );
 
+  const { innerLayout, outerLayout } = screen;
   const difference = useDerivedValue(() =>
-    clamp(
-      screen.outerLayout.value.height - screen.innerLayout.value.height,
-      0,
-      Infinity
-    )
+    clamp(outerLayout.value.height - innerLayout.value.height, 0, Infinity)
   );
 
   const style = useAnimatedStyle(() => ({

@@ -38,8 +38,11 @@ const useResetApproachingScreenScrollOffset = ({
   ReanimatedTopTabNavigation.ContextType,
   'context' | 'currentYPosition' | 'positionX'
 >) => {
+  const screenScrollYs = Object.values(context.screen.properties).map(
+    ({ scrollY }) => scrollY
+  );
   const screenOffsets = useDerivedValue(() =>
-    Object.values(context.screen.properties).map(({ scrollY }) => scrollY.value)
+    screenScrollYs.map((scrollY) => scrollY.value)
   );
 
   const resetApproachingScreenOffset = (
