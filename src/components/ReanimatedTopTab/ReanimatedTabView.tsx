@@ -1,13 +1,11 @@
+// Derived from react-native-reanimated-tab-view v0.4.3 by Umberto Lanno
+// (MIT License, Copyright (c) 2023 Umberto Lanno).
+// See NOTICE.md at the repository root for the full license text.
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, {
   interpolate,
-  LinearTransition,
   runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -46,30 +44,38 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     const loadedScreens = useRef([
       navigationState.routes[navigationState.index],
     ]);
-    const navigationStateRef = useSharedValue(navigationState);
-    const scrollPosition = useSharedValue(navigationState.index);
+    const routesCount = navigationState.routes.length;
+    // Worklets may only capture serializable values: keep a primitive-only
+    // snapshot of the navigation state instead of the route objects.
+    const pagerState = useSharedValue<ReanimatedTabViewTypes.PagerState>({
+      index: navigationState.index,
+      routesCount,
+    });
+    const scrollPosition = useSharedValue(-navigationState.index * width);
     const { positionX } = useTabContext();
 
     useEffect(() => {
-      navigationStateRef.value = navigationState;
-    }, [navigationState]);
+      pagerState.value = { index: navigationState.index, routesCount };
+    }, [navigationState.index, routesCount]);
+
+    const { inputRange, outputRange } = useMemo(() => {
+      const indices = Array.from({ length: routesCount }, (_, i) => i);
+      return {
+        inputRange: indices.map((i) => i * -width).reverse(),
+        outputRange: indices.slice().reverse(),
+      };
+    }, [routesCount, width]);
 
     useAnimatedReaction(
       () => scrollPosition.value,
       (value) => {
-        positionX.value = interpolate(
-          value,
-          navigationState.routes.map((_, i) => i * -width).reverse(),
-          navigationState.routes.map((_, i) => i).reverse(),
-          'clamp'
-        );
+        positionX.value = interpolate(value, inputRange, outputRange, 'clamp');
       }
     );
 
     const _navigate = (index: number) => {
-      scrollPosition.value = AnimationHelper.animation(-index * width, () =>
-        navigate(index)
-      );
+      navigate(index);
+      scrollPosition.value = AnimationHelper.animation(-index * width);
     };
 
     const minimumValueToChangeView = useMemo(
@@ -88,7 +94,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
               event,
               scrollPosition.value,
               width,
-              navigationStateRef.value
+              pagerState.value
             );
           })
           .onEnd((event) => {
@@ -97,20 +103,21 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
               event,
               minimumValueToChangeView,
               width,
-              navigationStateRef.value
+              pagerState.value
             );
             runOnJS(_navigate)(state.index);
           }),
       [minimumValueToChangeView, width]
     );
 
+    const maxOffset = -width * (routesCount - 1);
     const scrollPositionStyle = useAnimatedStyle(() => ({
       transform: [
         {
           translateX: interpolate(
             scrollPosition.value,
-            [-width * (navigationState.routes.length - 1), 0],
-            [-width * (navigationState.routes.length - 1), 0],
+            [maxOffset, 0],
+            [maxOffset, 0],
             'clamp'
           ),
         },
@@ -148,8 +155,8 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
     );
 
     return (
-      <GestureHandlerRootView style={defaultStyles.flex}>
-        <Reanimated.View layout={LinearTransition} style={defaultStyles.flex}>
+      <View style={defaultStyles.flex}>
+        <Reanimated.View style={defaultStyles.flex}>
           {renderTabBar
             ? renderTabBar({
                 navigationState,
@@ -159,11 +166,10 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
             : null}
           <GestureDetector gesture={panGesture}>
             <Reanimated.View
-              layout={LinearTransition}
               style={[
                 scrollPositionStyle,
                 defaultStyles.flex,
-                { width: width * navigationState.routes.length - 1 },
+                { width: width * routesCount },
                 defaultStyles.viewsContainer,
               ]}
             >
@@ -171,7 +177,7 @@ export const ReanimatedTabView = React.memo<ReanimatedTabViewProps>(
             </Reanimated.View>
           </GestureDetector>
         </Reanimated.View>
-      </GestureHandlerRootView>
+      </View>
     );
   }
 );

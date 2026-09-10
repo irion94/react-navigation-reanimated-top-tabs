@@ -1,7 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, {
-  Easing,
   runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -12,6 +11,7 @@ import Reanimated, {
 
 import { useTabContext } from '../../hooks/useTabContext';
 import { Platform, StyleSheet, View } from 'react-native';
+import { HEADER_TIMING } from '../../constants/animation';
 
 interface GestureWrapperProps {
   children: React.ReactNode;
@@ -44,11 +44,6 @@ export const GestureWrapper = ({ children, bounces }: GestureWrapperProps) => {
   const currentScreenScrollOffset = useDerivedValue(
     () => screenScrollYs[currentScreenIndex.value]?.value ?? 0
   );
-
-  const withTimingConfig = {
-    duration: 300,
-    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-  } as const;
 
   const [_gestureEnabled, setGestureEnabled] = useState(true);
 
@@ -84,17 +79,17 @@ export const GestureWrapper = ({ children, bounces }: GestureWrapperProps) => {
           if (gestureValue < -changeOffset && transformationY.value < 0) {
             transformationY.value = withTiming(
               -headerHeight.value,
-              withTimingConfig
+              HEADER_TIMING
             );
             currentYPosition.value = -headerHeight.value;
           } else if (gestureValue > changeOffset) {
             const destination = 0;
-            transformationY.value = withTiming(destination, withTimingConfig);
+            transformationY.value = withTiming(destination, HEADER_TIMING);
             currentYPosition.value = destination;
           } else {
             transformationY.value = withTiming(
               currentYPosition.value,
-              withTimingConfig
+              HEADER_TIMING
             );
           }
         })

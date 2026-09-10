@@ -9,6 +9,7 @@
   "files": [
     "src",
     "lib",
+    "NOTICE.md",
     "android",
     "ios",
     "cpp",
@@ -107,6 +108,9 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?|react-native-reanimated|react-native-gesture-handler)/)"
     ]
   },
   "commitlint": {

@@ -1,10 +1,13 @@
+// Derived from react-native-reanimated-tab-view v0.4.3 by Umberto Lanno
+// (MIT License, Copyright (c) 2023 Umberto Lanno).
+// See NOTICE.md at the repository root for the full license text.
 import type {
   GestureStateChangeEvent,
   GestureUpdateEvent,
   PanGestureChangeEventPayload,
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
-import { runOnJS, withTiming } from 'react-native-reanimated';
+import { withTiming } from 'react-native-reanimated';
 import type { ReanimatedTabViewTypes } from './types';
 
 const onChange = (
@@ -13,13 +16,13 @@ const onChange = (
   >,
   animationValue: number,
   width: number,
-  navigationState: ReanimatedTabViewTypes.NavigationState
+  pagerState: ReanimatedTabViewTypes.PagerState
 ) => {
   'worklet';
   if (animationValue > 0) {
     return 0;
   }
-  const routesLength = navigationState.routes.length - 1;
+  const routesLength = pagerState.routesCount - 1;
   if (animationValue < -width * routesLength) {
     return -width * routesLength;
   }
@@ -27,12 +30,12 @@ const onChange = (
 };
 
 const getIndex = (
-  navigationState: ReanimatedTabViewTypes.NavigationState,
+  pagerState: ReanimatedTabViewTypes.PagerState,
   type: 'increment' | 'decrement'
 ) => {
   'worklet';
-  const max = navigationState.routes.length - 1;
-  const current = navigationState.index;
+  const max = pagerState.routesCount - 1;
+  const current = pagerState.index;
 
   if (type === 'increment' && current < max) {
     return current + 1;
@@ -49,36 +52,34 @@ const onEnd = (
   event: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
   minimumValueToChangeView: number,
   width: number,
-  navigationState: ReanimatedTabViewTypes.NavigationState
+  pagerState: ReanimatedTabViewTypes.PagerState
 ) => {
   'worklet';
   const { velocityX, translationX } = event;
 
   if (velocityX < -200 || translationX < -minimumValueToChangeView) {
-    const newIndex = getIndex(navigationState, 'increment');
+    const newIndex = getIndex(pagerState, 'increment');
     return {
       index: newIndex,
       value: -width * newIndex,
     };
   }
   if (velocityX > 200 || translationX > minimumValueToChangeView) {
-    const newIndex = getIndex(navigationState, 'decrement');
+    const newIndex = getIndex(pagerState, 'decrement');
     return {
       index: newIndex,
       value: -width * newIndex,
     };
   }
   return {
-    index: navigationState.index,
-    value: -width * navigationState.index,
+    index: pagerState.index,
+    value: -width * pagerState.index,
   };
 };
 
-const animation = (newValue: number, onFinished?: () => void) => {
+const animation = (newValue: number) => {
   'worklet';
-  return withTiming(newValue, { duration: 350 }, (finished) => {
-    if (finished && onFinished) runOnJS(onFinished)();
-  });
+  return withTiming(newValue, { duration: 350 });
 };
 
 export const AnimationHelper = {
